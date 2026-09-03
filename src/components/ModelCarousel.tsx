@@ -43,6 +43,7 @@ export default function ModelCarousel() {
                   alt={group === 0 ? 'Sydney holding a pink iBook' : ''}
                   fill
                   sizes="(max-width: 768px) 42vw, 19vw"
+                  loading={group === 0 ? 'eager' : 'lazy'}
                   className="object-contain object-bottom"
                 />
               </div>
