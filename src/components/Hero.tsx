@@ -21,7 +21,8 @@ export default function Hero() {
                   fill
                   className="object-contain object-left"
                   sizes="(max-width: 768px) 74vw, 1050px"
-                  priority
+                  preload
+                  unoptimized
                 />
               </div>
 
@@ -32,7 +33,8 @@ export default function Hero() {
                   fill
                   className="object-contain object-left"
                   sizes="(max-width: 768px) 55vw, 780px"
-                  priority
+                  preload
+                  unoptimized
                 />
               </div>
             </div>

@@ -14,6 +14,7 @@ export default function Footer() {
             alt="Contact links"
             fill
             sizes="(max-width: 768px) 88vw, 960px"
+            unoptimized
             className="object-contain"
           />
           <div className="absolute inset-0 flex">

@@ -44,6 +44,7 @@ export default function ModelCarousel() {
                   fill
                   sizes="(max-width: 768px) 42vw, 19vw"
                   loading={group === 0 ? 'eager' : 'lazy'}
+                  unoptimized
                   className="object-contain object-bottom"
                 />
               </div>
