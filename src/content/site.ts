@@ -120,7 +120,7 @@ export const siteContent = {
     detail: 5,
     contrast: 3.2,
     offset: -0.22,
-    spread: 1,
+    spread: -0.5,
     seed: 7,
     grain: 0.34,
     blockiness: 0,
