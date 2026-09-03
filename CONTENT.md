@@ -58,7 +58,7 @@ Adjust visual parameters:
 
 ```typescript
 terrain: {
-  palette: ['#510BF5', '#75FBFA', '#78FC4C', '#EAFE53', '#EE7F31', '#EA337B'],
+  palette: ['#7A27BD', '#E6308E', '#F1347C', '#F07F32', '#EAFE53', '#71EA0C'],
   scale: 2.6,
   warp: 1.1,
   detail: 5,

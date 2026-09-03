@@ -108,12 +108,12 @@ export const siteContent = {
   // Terrain tunables - expose for easy adjustment
   terrain: {
     palette: [
-      '#510BF5',
-      '#75FBFA',
-      '#78FC4C',
+      '#7A27BD',
+      '#E6308E',
+      '#F1347C',
+      '#F07F32',
       '#EAFE53',
-      '#EE7F31',
-      '#EA337B',
+      '#71EA0C',
     ],
     scale: 2.6,
     warp: 1.1,
