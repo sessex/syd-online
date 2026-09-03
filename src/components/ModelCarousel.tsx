@@ -6,6 +6,23 @@ export default function ModelCarousel() {
 
   return (
     <div className="relative w-full overflow-hidden">
+      <style>{`
+        @keyframes model-marquee {
+          from { transform: translate3d(0, 0, 0); }
+          to { transform: translate3d(-50%, 0, 0); }
+        }
+
+        .model-marquee-track {
+          animation: model-marquee 24s linear infinite;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .model-marquee-track {
+            animation: none;
+            transform: none;
+          }
+        }
+      `}</style>
       <div className="model-marquee-track flex w-max">
         {[0, 1].map((group) => (
           <div
