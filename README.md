@@ -1,36 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sydney Essex — Personal Landing Page
+
+Personal landing page built with Next.js 16, featuring dynamic R3F terrain background and infinite carousel.
+
+## Features
+
+- **Dynamic Terrain**: WebGL shader-based background with psychedelic contour bands, grain, and subtle animation
+- **Infinite Carousel**: Seamless horizontal loop powered by Framer Motion
+- **Single Content Source**: All copy, links, and asset paths managed in `src/content/site.ts`
+- **Swappable Assets**: Drop-in PNG replacements with automatic fallbacks
+- **Responsive Design**: Mobile-friendly layout throughout
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the landing page.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Content Management
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+All content is managed in **`src/content/site.ts`**:
 
-## Learn More
+- Hero copy and asset paths
+- Carousel images
+- About, Projects, Experience text
+- All external links
+- Terrain visual parameters (colors, animation speed, contour bands)
 
-To learn more about Next.js, take a look at the following resources:
+See `CONTENT.md` for detailed asset structure and swapping guide.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Asset Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+public/
+  brand/
+    name.png          # "SYDNEY ESSEX" bead lettering
+    subtitle.png      # "product engineer based in nyc"
+    footer.png        # Contact strip with pink stars
+  carousel/
+    placeholder.png   # Model cutout (currently repeated)
+```
 
-## Deploy on Vercel
+## Tech Stack
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Next.js 16** (App Router)
+- **React 19**
+- **Tailwind CSS 4**
+- **React Three Fiber** (3D terrain)
+- **Framer Motion** (carousel animation)
+- **TypeScript**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Build
+
+```bash
+npm run build
+npm start
+```
+
+## Development
+
+- `src/app/` — Next.js app routes
+- `src/components/` — Hero, TerrainBackground, ModelCarousel, About, Projects, Experience, Footer
+- `src/content/` — Content configuration
+- `public/` — Static assets (brand, carousel images)
+
+## Customization
+
+### Terrain Visuals
+
+Edit `src/content/site.ts`:
+
+```typescript
+terrain: {
+  colors: ['#FF1493', '#00CED1', '#FFD700', '#9370DB', '#00FF00'],
+  animationSpeed: 0.0005,
+  contourBands: 12,
+  noiseScale: 1.5,
+}
+```
+
+### Typography
+
+Body sections use Helvetica Neue stack:
+- Font: "Helvetica Neue", Helvetica, Arial, sans-serif
+- Size: 36px
+- Letter-spacing: -3% (-0.03em)
+- Titles: bold / Body: regular
+
+## License
+
+Private project — Sydney Essex
