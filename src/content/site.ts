@@ -122,12 +122,12 @@ export const siteContent = {
     offset: -0.22,
     spread: 1,
     seed: 7,
-    grain: 0.18,
+    grain: 0.34,
     blockiness: 0,
     bands: 6,
     motion: {
-      intensity: 0.6,
-      loopSeconds: 2.5,
+      intensity: 0.16,
+      loopSeconds: 10,
     },
   },
 } as const;
