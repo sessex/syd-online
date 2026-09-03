@@ -62,7 +62,7 @@ terrain: {
   scale: 2.6,
   warp: 1.1,
   detail: 5,
-  contrast: 1.7,
+  contrast: 2.3,
   spread: 1,
   seed: 7,
   grain: 0.18,
