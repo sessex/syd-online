@@ -38,7 +38,7 @@ export default function Footer() {
   return (
     <footer className="w-full py-16 md:py-24">
       <div className="flex justify-center">
-        <div className="relative w-full max-w-2xl h-16 md:h-20">
+        <div className="relative aspect-[1600/164] w-[min(88vw,960px)]">
           <Image
             src={stripImage}
             alt="Contact links"
@@ -48,7 +48,7 @@ export default function Footer() {
           />
           {/* Overlay clickable areas - divide strip into 4 equal sections */}
           <div className="absolute inset-0 flex">
-            {links.map((link, index) => (
+            {links.map((link) => (
               <Link
                 key={link.name}
                 href={link.href}

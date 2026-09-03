@@ -17,7 +17,7 @@ export default function Hero() {
         <TerrainBackground />
 
         <div className="relative z-10 h-full">
-          <header className="absolute left-[clamp(24px,4.2vw,68px)] top-[clamp(26px,4.2vw,68px)] w-[min(76vw,760px)]">
+          <header className="absolute left-[clamp(24px,4.2vw,68px)] top-[clamp(26px,4.2vw,68px)] w-[min(74vw,1050px)]">
             <div className="flex flex-col items-start gap-[clamp(6px,0.8vw,12px)]">
               {!nameImageError ? (
                 <div className="relative aspect-[700/106] w-full">
@@ -38,7 +38,7 @@ export default function Hero() {
               )}
 
               {!subtitleImageError ? (
-                <div className="relative aspect-[1024/139] w-[74%]">
+                <div className="relative aspect-[1600/168] w-[74%]">
                   <Image
                     src={subtitle.image}
                     alt={subtitle.fallback}
