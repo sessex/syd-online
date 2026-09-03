@@ -68,8 +68,8 @@ terrain: {
   seed: 7,
   grain: 0.34,
   motion: {
-    intensity: 0.1,
-    loopSeconds: 12,
+    intensity: 0.04,
+    loopSeconds: 18,
   },
 }
 ```

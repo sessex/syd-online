@@ -1,32 +1,12 @@
-'use client';
-
-import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { siteContent } from '@/content/site';
-import { useReducedMotion } from 'framer-motion';
 
 export default function ModelCarousel() {
   const { images } = siteContent.carousel;
-  const shouldReduceMotion = useReducedMotion();
 
   return (
     <div className="relative w-full overflow-hidden">
-      <motion.div
-        className="flex w-max"
-        animate={shouldReduceMotion ? undefined : { x: ['0%', '-50%'] }}
-        transition={
-          shouldReduceMotion
-            ? undefined
-            : {
-              x: {
-            repeat: Infinity,
-            repeatType: 'loop',
-            duration: 24,
-            ease: 'linear',
-          },
-            }
-        }
-      >
+      <div className="model-marquee-track flex w-max">
         {[0, 1].map((group) => (
           <div
             key={group}
@@ -51,7 +31,7 @@ export default function ModelCarousel() {
             ))}
           </div>
         ))}
-      </motion.div>
+      </div>
     </div>
   );
 }

@@ -126,8 +126,8 @@ export const siteContent = {
     blockiness: 0,
     bands: 6,
     motion: {
-      intensity: 0.1,
-      loopSeconds: 12,
+      intensity: 0.04,
+      loopSeconds: 18,
     },
   },
 } as const;

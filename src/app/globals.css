@@ -23,3 +23,24 @@ body {
 .font-helvetica {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
+
+@keyframes model-marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.model-marquee-track {
+  animation: model-marquee 24s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .model-marquee-track {
+    animation: none;
+    transform: none;
+  }
+}
