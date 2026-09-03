@@ -107,23 +107,26 @@ export const siteContent = {
 
   // Terrain tunables - expose for easy adjustment
   terrain: {
-    colors: [
-      '#5a16d8',
-      '#173df5',
-      '#59ff3f',
-      '#ffe13a',
-      '#ff7838',
-      '#ef2a87',
+    palette: [
+      '#510BF5',
+      '#75FBFA',
+      '#78FC4C',
+      '#EAFE53',
+      '#EE7F31',
+      '#EA337B',
     ],
-    fieldScale: 2.6,
-    warpStrength: 1.1,
+    scale: 2.6,
+    warp: 1.1,
     detail: 5,
     contrast: 1.7,
-    colorBias: 0.22,
-    ditherStrength: 0.3,
-    grainStrength: 0.1,
-    ditherPixelSize: 2,
-    loopSeconds: 16,
-    loopRadius: 0.18,
+    spread: 0,
+    seed: 7,
+    grain: 0.3,
+    blockiness: 0,
+    bands: 6,
+    motion: {
+      intensity: 0.6,
+      loopSeconds: 2.5,
+    },
   },
 } as const;

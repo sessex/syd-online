@@ -18,12 +18,7 @@ Place PNG files in `public/brand/`:
 
 - `name.png` - "SYDNEY ESSEX" bead lettering (transparent PNG)
 - `subtitle.png` - "product engineer based in nyc" (transparent PNG)
-- `footer-x.png` - X/Twitter bead label
-- `footer-linkedin.png` - LinkedIn bead label
-- `footer-github.png` - GitHub bead label
-- `footer-email.png` - Email bead label
-
-**Fallbacks**: If PNG assets are missing, the site displays styled text automatically.
+- `footer.png` - Combined X / LinkedIn / GitHub / email bead strip
 
 ### Carousel Images
 Place model cutout PNGs in `public/carousel/`:
@@ -40,7 +35,6 @@ Edit sections in `src/content/site.ts`:
 
 ```typescript
 about: {
-  title: 'About',
   paragraphs: [
     'Your first paragraph...',
     'Your second paragraph...',
@@ -64,12 +58,25 @@ Adjust visual parameters:
 
 ```typescript
 terrain: {
-  colors: ['#FF1493', '#00CED1', ...],  // Array of hex colors
-  animationSpeed: 0.0005,                // Higher = faster
-  contourBands: 12,                      // More = denser lines
-  noiseScale: 1.5,                       // Higher = more detailed
+  palette: ['#510BF5', '#75FBFA', '#78FC4C', '#EAFE53', '#EE7F31', '#EA337B'],
+  scale: 2.6,
+  warp: 1.1,
+  detail: 5,
+  contrast: 1.7,
+  spread: 0,
+  seed: 7,
+  grain: 0.3,
+  motion: {
+    intensity: 0.6,
+    loopSeconds: 2.5,
+  },
 }
 ```
+
+The shader applies value-noise domain warping, static pixel grain, and hard
+palette bands. Adjust field values incrementally; grain is intentionally
+applied before palette quantization so the bead artwork remains on a clean,
+transparent layer above the terrain.
 
 ## Typography
 
@@ -82,9 +89,9 @@ Body sections use:
 
 ## Next Steps
 
-1. Drop brand PNG assets into `public/brand/`
+1. Replace brand PNG assets in `public/brand/` while keeping their filenames
 2. Add carousel cutouts to `public/carousel/`
 3. Update `src/content/site.ts` with real links and copy
-4. Adjust terrain colors/animation if needed
+4. Adjust terrain field values if needed
 
 No code changes required for content swaps.

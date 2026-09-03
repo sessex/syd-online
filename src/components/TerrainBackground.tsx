@@ -16,256 +16,235 @@ const vertexShader = `
 `;
 
 const fragmentShader = `
+  precision highp float;
+
   uniform float uTime;
   uniform vec2 uResolution;
-  uniform vec3 uColors[6];
-  uniform float uFieldScale;
-  uniform float uWarpStrength;
+  uniform vec3 uPalette[6];
+  uniform float uScale;
+  uniform float uWarp;
   uniform float uDetail;
   uniform float uContrast;
-  uniform float uColorBias;
-  uniform float uDitherStrength;
-  uniform float uGrainStrength;
-  uniform float uDitherPixelSize;
-  uniform float uLoopRadius;
+  uniform float uSpread;
+  uniform float uSeed;
+  uniform float uGrain;
+  uniform float uBlockiness;
+  uniform float uBands;
+  uniform float uMotionIntensity;
+  uniform float uLoopSeconds;
   varying vec2 vUv;
 
-  vec3 mod289(vec3 x) {
-    return x - floor(x * (1.0 / 289.0)) * 289.0;
+  float fadeCubic(float value) {
+    return value * value * (3.0 - 2.0 * value);
   }
 
-  vec2 mod289(vec2 x) {
-    return x - floor(x * (1.0 / 289.0)) * 289.0;
-  }
-
-  vec3 permute(vec3 x) {
-    return mod289(((x * 34.0) + 1.0) * x);
-  }
-
-  float snoise(vec2 v) {
-    const vec4 C = vec4(
-      0.211324865405187,
-      0.366025403784439,
-      -0.577350269189626,
-      0.024390243902439
+  // Dave Hoskins-style integer-cell hash. It avoids the visible sine lattice
+  // produced by the common fract(sin(dot())) shortcut.
+  float hash41(vec4 cell, float seed) {
+    vec4 p = fract(
+      (cell + seed * 0.0137)
+      * vec4(0.1031, 0.1030, 0.0973, 0.1099)
     );
-    vec2 i = floor(v + dot(v, C.yy));
-    vec2 x0 = v - i + dot(i, C.xx);
-    vec2 i1 = (x0.x > x0.y)
-      ? vec2(1.0, 0.0)
-      : vec2(0.0, 1.0);
-    vec4 x12 = x0.xyxy + C.xxzz;
-    x12.xy -= i1;
-    i = mod289(i);
-    vec3 p = permute(
-      permute(i.y + vec3(0.0, i1.y, 1.0))
-      + i.x
-      + vec3(0.0, i1.x, 1.0)
-    );
-    vec3 m = max(
-      0.5 - vec3(
-        dot(x0, x0),
-        dot(x12.xy, x12.xy),
-        dot(x12.zw, x12.zw)
-      ),
-      0.0
-    );
-    m = m * m;
-    m = m * m;
-    vec3 x = 2.0 * fract(p * C.www) - 1.0;
-    vec3 h = abs(x) - 0.5;
-    vec3 ox = floor(x + 0.5);
-    vec3 a0 = x - ox;
-    m *= 1.79284291400159
-      - 0.85373472095314 * (a0 * a0 + h * h);
-    vec3 g;
-    g.x = a0.x * x0.x + h.x * x0.y;
-    g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-    return 130.0 * dot(m, g);
+    p += dot(p, p.wzxy + 33.33);
+    return fract((p.x + p.y) * (p.z + p.w));
   }
 
-  float fbm(vec2 p) {
-    float value = 0.0;
-    float amplitude = 0.52;
-    mat2 rotation = mat2(0.80, -0.60, 0.60, 0.80);
+  float valueNoise4(vec4 point, float seed) {
+    vec4 cell = floor(point);
+    vec4 fraction = fract(point);
+    vec4 blend = vec4(
+      fadeCubic(fraction.x),
+      fadeCubic(fraction.y),
+      fadeCubic(fraction.z),
+      fadeCubic(fraction.w)
+    );
 
-    for (int octave = 0; octave < 6; octave++) {
+    float n0000 = hash41(cell + vec4(0.0, 0.0, 0.0, 0.0), seed);
+    float n1000 = hash41(cell + vec4(1.0, 0.0, 0.0, 0.0), seed);
+    float n0100 = hash41(cell + vec4(0.0, 1.0, 0.0, 0.0), seed);
+    float n1100 = hash41(cell + vec4(1.0, 1.0, 0.0, 0.0), seed);
+    float n0010 = hash41(cell + vec4(0.0, 0.0, 1.0, 0.0), seed);
+    float n1010 = hash41(cell + vec4(1.0, 0.0, 1.0, 0.0), seed);
+    float n0110 = hash41(cell + vec4(0.0, 1.0, 1.0, 0.0), seed);
+    float n1110 = hash41(cell + vec4(1.0, 1.0, 1.0, 0.0), seed);
+    float n0001 = hash41(cell + vec4(0.0, 0.0, 0.0, 1.0), seed);
+    float n1001 = hash41(cell + vec4(1.0, 0.0, 0.0, 1.0), seed);
+    float n0101 = hash41(cell + vec4(0.0, 1.0, 0.0, 1.0), seed);
+    float n1101 = hash41(cell + vec4(1.0, 1.0, 0.0, 1.0), seed);
+    float n0011 = hash41(cell + vec4(0.0, 0.0, 1.0, 1.0), seed);
+    float n1011 = hash41(cell + vec4(1.0, 0.0, 1.0, 1.0), seed);
+    float n0111 = hash41(cell + vec4(0.0, 1.0, 1.0, 1.0), seed);
+    float n1111 = hash41(cell + vec4(1.0, 1.0, 1.0, 1.0), seed);
+
+    float x000 = mix(n0000, n1000, blend.x);
+    float x100 = mix(n0100, n1100, blend.x);
+    float x010 = mix(n0010, n1010, blend.x);
+    float x110 = mix(n0110, n1110, blend.x);
+    float x001 = mix(n0001, n1001, blend.x);
+    float x101 = mix(n0101, n1101, blend.x);
+    float x011 = mix(n0011, n1011, blend.x);
+    float x111 = mix(n0111, n1111, blend.x);
+    float y00 = mix(x000, x100, blend.y);
+    float y10 = mix(x010, x110, blend.y);
+    float y01 = mix(x001, x101, blend.y);
+    float y11 = mix(x011, x111, blend.y);
+    float z0 = mix(y00, y10, blend.z);
+    float z1 = mix(y01, y11, blend.z);
+    return mix(z0, z1, blend.w);
+  }
+
+  float fbm4(vec4 point, float seed, float octaves) {
+    float amplitude = 0.5;
+    float frequency = 1.0;
+    float sum = 0.0;
+    float normalization = 0.0;
+
+    for (int octave = 0; octave < 7; octave++) {
       float enabled = 1.0
-        - step(uDetail, float(octave) + 0.5);
-      value += amplitude * snoise(p) * enabled;
-      p = rotation * p * 2.03 + vec2(7.13, 3.71);
+        - step(octaves, float(octave) + 0.5);
+      float octaveSeed = seed + float(octave) * 1319.0;
+      vec4 samplePoint = vec4(
+        point.xy * frequency,
+        point.zw
+      );
+      sum += amplitude
+        * valueNoise4(samplePoint, octaveSeed)
+        * enabled;
+      normalization += amplitude * enabled;
       amplitude *= 0.5;
+      frequency *= 2.0;
     }
 
-    return value;
+    return sum / max(normalization, 0.0001);
   }
 
-  float random(vec2 p) {
-    return fract(
-      sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453123
-    );
-  }
-
-  float bayer4(vec2 coordinate) {
-    vec2 cell = mod(floor(coordinate), 4.0);
-    float x = cell.x;
-    float y = cell.y;
-    float value = 0.0;
-
-    if (y < 1.0) {
-      if (x < 1.0) value = 0.0;
-      else if (x < 2.0) value = 8.0;
-      else if (x < 3.0) value = 2.0;
-      else value = 10.0;
-    } else if (y < 2.0) {
-      if (x < 1.0) value = 12.0;
-      else if (x < 2.0) value = 4.0;
-      else if (x < 3.0) value = 14.0;
-      else value = 6.0;
-    } else if (y < 3.0) {
-      if (x < 1.0) value = 3.0;
-      else if (x < 2.0) value = 11.0;
-      else if (x < 3.0) value = 1.0;
-      else value = 9.0;
-    } else {
-      if (x < 1.0) value = 15.0;
-      else if (x < 2.0) value = 7.0;
-      else if (x < 3.0) value = 13.0;
-      else value = 5.0;
-    }
-
-    return (value + 0.5) / 16.0;
-  }
-
-  vec3 palette(float index) {
-    if (index < 0.5) return uColors[0];
-    if (index < 1.5) return uColors[1];
-    if (index < 2.5) return uColors[2];
-    if (index < 3.5) return uColors[3];
-    if (index < 4.5) return uColors[4];
-    return uColors[5];
+  vec3 paletteColor(float index) {
+    if (index < 0.5) return uPalette[0];
+    if (index < 1.5) return uPalette[1];
+    if (index < 2.5) return uPalette[2];
+    if (index < 3.5) return uPalette[3];
+    if (index < 4.5) return uPalette[4];
+    return uPalette[5];
   }
 
   void main() {
-    float aspect = uResolution.x / max(uResolution.y, 1.0);
-    vec2 p = vUv - 0.5;
-    p.x *= aspect;
-    p *= uFieldScale;
+    vec2 pixel = gl_FragCoord.xy;
+    if (uBlockiness >= 1.0) {
+      pixel = floor(pixel / uBlockiness) * uBlockiness;
+    }
 
-    vec2 orbit = vec2(cos(uTime), sin(uTime)) * uLoopRadius;
-    vec2 perpendicularOrbit = vec2(-orbit.y, orbit.x);
+    // Both axes divide by width, matching playgrnd's isotropic field domain.
+    vec2 domain = pixel / uResolution.x * uScale;
+    float angle = fract(uTime / uLoopSeconds) * 6.28318530718;
+    vec2 extra = vec2(cos(angle), sin(angle)) * uMotionIntensity;
 
-    vec2 firstWarp = vec2(
-      fbm(p + orbit + vec2(0.0, 0.8)),
-      fbm(p + perpendicularOrbit + vec2(5.2, 1.3))
+    float warpX = fbm4(
+      vec4(domain + vec2(5.2, 1.3), extra),
+      uSeed + 11.0,
+      2.0
+    );
+    float warpY = fbm4(
+      vec4(domain + vec2(9.1, 7.7), extra),
+      uSeed + 29.0,
+      2.0
+    );
+    vec2 warpedDomain = domain
+      + uWarp * (vec2(warpX, warpY) - 0.5) * 2.0;
+
+    float height = fbm4(
+      vec4(warpedDomain, extra),
+      uSeed,
+      uDetail
+    );
+    height = clamp(
+      (height - 0.5) * uContrast + 0.5,
+      0.0,
+      1.0
     );
 
-    vec2 secondWarp = vec2(
-      fbm(
-        p
-        + uWarpStrength * firstWarp
-        + orbit * 0.65
-        + vec2(1.7, 9.2)
-      ),
-      fbm(
-        p
-        + uWarpStrength * firstWarp
-        + perpendicularOrbit * 0.65
-        + vec2(8.3, 2.8)
-      )
+    // Static device-pixel grain perturbs the scalar before quantization.
+    // Pixels at a boundary become one neighboring palette ink or the other.
+    float grain = hash41(
+      vec4(floor(gl_FragCoord.xy), 1.0, 1.0),
+      uSeed + 97.0
     );
+    height = clamp(
+      height + (grain - 0.5) * uGrain,
+      0.0,
+      1.0
+    );
+    height = pow(height, exp2(-uSpread));
 
-    float detailedField = fbm(
-      p
-      + uWarpStrength * 1.15 * secondWarp
-      + orbit * 0.45
+    float colorIndex = clamp(
+      floor(height * uBands),
+      0.0,
+      uBands - 1.0
     );
-    float broadField = snoise(
-      p * 0.38
-      - perpendicularOrbit * 1.8
-      + vec2(2.4, -1.6)
-    );
-    float field = detailedField * 0.74 + broadField * 0.26;
-    float elevation = field * 0.5 + 0.5;
-    elevation = (elevation - 0.5) * uContrast
-      + 0.5
-      + uColorBias;
-    elevation = clamp(elevation, 0.0, 0.9999);
+    vec3 color = paletteColor(colorIndex);
 
-    float scaledBand = elevation * 5.0;
-    float lowerBand = floor(scaledBand);
-    float transition = fract(scaledBand);
-    float orderedThreshold = bayer4(
-      gl_FragCoord.xy / max(uDitherPixelSize, 1.0)
-    );
-    float threshold = mix(
-      0.5,
-      orderedThreshold,
-      uDitherStrength
-    );
-    float colorIndex = lowerBand + step(threshold, transition);
-    vec3 color = palette(colorIndex);
-
-    float grain = random(gl_FragCoord.xy);
-    color += (grain - 0.5) * uGrainStrength;
-
-    gl_FragColor = vec4(clamp(color, 0.0, 1.0), 1.0);
-    #include <tonemapping_fragment>
+    gl_FragColor = vec4(color, 1.0);
     #include <colorspace_fragment>
   }
 `;
 
 function TerrainMesh() {
   const meshRef = useRef<THREE.Mesh>(null);
-  const phaseRef = useRef(0);
+  const elapsedRef = useRef(0);
+  const gl = useThree((state) => state.gl);
   const size = useThree((state) => state.size);
   const shouldReduceMotion = useReducedMotion();
   const {
-    colors,
-    fieldScale,
-    warpStrength,
+    palette,
+    scale,
+    warp,
     detail,
     contrast,
-    colorBias,
-    ditherStrength,
-    grainStrength,
-    ditherPixelSize,
-    loopSeconds,
-    loopRadius,
+    spread,
+    seed,
+    grain,
+    blockiness,
+    bands,
+    motion,
   } = siteContent.terrain;
+
+  const resolution = useMemo(
+    () => gl.getDrawingBufferSize(new THREE.Vector2()),
+    [gl, size.height, size.width]
+  );
 
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
-      uResolution: {
-        value: new THREE.Vector2(size.width, size.height),
+      uResolution: { value: resolution },
+      uPalette: {
+        value: palette.map((color) => new THREE.Color(color)),
       },
-      uColors: {
-        value: colors.map((color) => new THREE.Color(color)),
-      },
-      uFieldScale: { value: fieldScale },
-      uWarpStrength: { value: warpStrength },
+      uScale: { value: scale },
+      uWarp: { value: warp },
       uDetail: { value: detail },
       uContrast: { value: contrast },
-      uColorBias: { value: colorBias },
-      uDitherStrength: { value: ditherStrength },
-      uGrainStrength: { value: grainStrength },
-      uDitherPixelSize: { value: ditherPixelSize },
-      uLoopRadius: { value: loopRadius },
+      uSpread: { value: spread },
+      uSeed: { value: seed },
+      uGrain: { value: grain },
+      uBlockiness: { value: blockiness },
+      uBands: { value: bands },
+      uMotionIntensity: { value: motion.intensity },
+      uLoopSeconds: { value: motion.loopSeconds },
     }),
     [
-      colorBias,
-      colors,
+      bands,
+      blockiness,
       contrast,
       detail,
-      ditherPixelSize,
-      ditherStrength,
-      fieldScale,
-      grainStrength,
-      loopRadius,
-      size.height,
-      size.width,
-      warpStrength,
+      grain,
+      motion.intensity,
+      motion.loopSeconds,
+      palette,
+      resolution,
+      scale,
+      seed,
+      spread,
+      warp,
     ]
   );
 
@@ -274,11 +253,10 @@ function TerrainMesh() {
       return;
     }
 
-    phaseRef.current =
-      (phaseRef.current + (delta * Math.PI * 2) / loopSeconds)
-      % (Math.PI * 2);
+    elapsedRef.current =
+      (elapsedRef.current + delta) % motion.loopSeconds;
     const material = meshRef.current.material as THREE.ShaderMaterial;
-    material.uniforms.uTime.value = phaseRef.current;
+    material.uniforms.uTime.value = elapsedRef.current;
   });
 
   return (
@@ -288,6 +266,7 @@ function TerrainMesh() {
         vertexShader={vertexShader}
         fragmentShader={fragmentShader}
         uniforms={uniforms}
+        toneMapped={false}
       />
     </mesh>
   );
