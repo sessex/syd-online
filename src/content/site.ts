@@ -5,7 +5,7 @@
 
 export const siteContent = {
   hero: {
-    // Brand assets - fallback to text if PNG not available
+    // Brand assets - prefer transparent PNG, fallback to SVG or text
     name: {
       image: '/brand/name.png',
       fallback: 'SYDNEY ESSEX',
@@ -17,7 +17,7 @@ export const siteContent = {
   },
 
   carousel: {
-    // For now, one placeholder repeated. Sydney can drop real cutouts later.
+    // Green blazer / pink iBook cutout repeated for marquee
     images: [
       '/carousel/placeholder.png',
       '/carousel/placeholder.png',
@@ -41,7 +41,7 @@ export const siteContent = {
       {
         name: 'trouvaille',
         description: 'placeholder text',
-        href: '#',
+        href: 'https://trouv.vercel.app/',
       },
       {
         name: 'color hunt',
@@ -57,7 +57,7 @@ export const siteContent = {
       {
         name: 'asimov collective',
         description: 'building multi-tenant AI platform that learns client\'s brand and generates on-brand assets for in-house design work',
-        href: '#',
+        href: 'https://www.asimovcollective.com/',
       },
       {
         name: 'goldman sachs',
@@ -67,7 +67,7 @@ export const siteContent = {
       {
         name: 'hypno',
         description: 'creative workflow platform for event production and branded content galleries',
-        href: '#',
+        href: 'https://app.hypno.com/',
       },
       {
         name: 'vbn',
@@ -77,32 +77,31 @@ export const siteContent = {
       {
         name: 'artswrk',
         description: 'launched an arts and entertainment professional network end-to-end',
-        href: '#',
+        href: 'https://artswrk.com/',
       },
     ],
   },
 
   footer: {
+    // Single footer strip: "x ★ linkedin ★ github ★ email"
+    // Overlay 4 clickable hit-areas instead of separate images
+    stripImage: '/brand/footer.png',
     links: [
       {
         name: 'x',
-        href: '#',
-        image: '/brand/footer-x.png',
+        href: 'https://x.com/waifu101',
       },
       {
         name: 'linkedin',
-        href: '#',
-        image: '/brand/footer-linkedin.png',
+        href: 'https://www.linkedin.com/in/sydneyessex/',
       },
       {
         name: 'github',
-        href: '#',
-        image: '/brand/footer-github.png',
+        href: 'https://github.com/sessex',
       },
       {
         name: 'email',
-        href: '#',
-        image: '/brand/footer-email.png',
+        href: 'mailto:sydneyressex@gmail.com',
       },
     ],
   },
