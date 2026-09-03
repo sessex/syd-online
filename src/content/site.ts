@@ -107,11 +107,9 @@ export const siteContent = {
 
   // Terrain tunables - expose for easy adjustment
   terrain: {
-    // pink, orange, lime, purple, lavender
-    colors: ['#ef2b83', '#ff7939', '#5bff45', '#3119e8', '#ce66ea'],
-    animationSpeed: 0.06,
-    contourBands: 8,
-    noiseScale: 1.35,
-    grainStrength: 0.12,
+    colors: ['#FF1493', '#00CED1', '#FFD700', '#9370DB', '#00FF00'],
+    animationSpeed: 0.0005,
+    contourBands: 12,
+    noiseScale: 1.5,
   },
 } as const;

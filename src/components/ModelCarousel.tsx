@@ -3,12 +3,10 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { siteContent } from '@/content/site';
-import { useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 
 export default function ModelCarousel() {
   const { images } = siteContent.carousel;
-  const [imageError, setImageError] = useState(false);
   const shouldReduceMotion = useReducedMotion();
 
   return (
@@ -40,18 +38,13 @@ export default function ModelCarousel() {
                 key={`${group}-${index}`}
                 className="relative h-[clamp(300px,57dvh,610px)] w-[clamp(150px,18.5vw,296px)] shrink-0"
               >
-                {imageError ? (
-                  <div className="absolute inset-x-[20%] bottom-0 h-[82%] rounded-t-full bg-black/10" />
-                ) : (
-                  <Image
-                    src={src}
-                    alt={group === 0 ? 'Sydney holding a pink iBook' : ''}
-                    fill
-                    sizes="(max-width: 768px) 42vw, 19vw"
-                    className="object-contain object-bottom"
-                    onError={() => setImageError(true)}
-                  />
-                )}
+                <Image
+                  src={src}
+                  alt={group === 0 ? 'Sydney holding a pink iBook' : ''}
+                  fill
+                  sizes="(max-width: 768px) 42vw, 19vw"
+                  className="object-contain object-bottom"
+                />
               </div>
             ))}
           </div>
