@@ -119,6 +119,7 @@ export const siteContent = {
     warp: 1.1,
     detail: 5,
     contrast: 3.2,
+    offset: -0.22,
     spread: 1,
     seed: 7,
     grain: 0.18,

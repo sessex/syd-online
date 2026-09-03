@@ -25,6 +25,7 @@ const fragmentShader = `
   uniform float uWarp;
   uniform float uDetail;
   uniform float uContrast;
+  uniform float uOffset;
   uniform float uSpread;
   uniform float uSeed;
   uniform float uGrain;
@@ -157,7 +158,7 @@ const fragmentShader = `
       uDetail
     );
     height = clamp(
-      (height - 0.5) * uContrast + 0.5,
+      (height - 0.5) * uContrast + 0.5 + uOffset,
       0.0,
       1.0
     );
@@ -199,6 +200,7 @@ function TerrainMesh() {
     warp,
     detail,
     contrast,
+    offset,
     spread,
     seed,
     grain,
@@ -223,6 +225,7 @@ function TerrainMesh() {
       uWarp: { value: warp },
       uDetail: { value: detail },
       uContrast: { value: contrast },
+      uOffset: { value: offset },
       uSpread: { value: spread },
       uSeed: { value: seed },
       uGrain: { value: grain },
@@ -239,6 +242,7 @@ function TerrainMesh() {
       grain,
       motion.intensity,
       motion.loopSeconds,
+      offset,
       palette,
       resolution,
       scale,
