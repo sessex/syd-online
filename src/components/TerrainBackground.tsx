@@ -190,8 +190,8 @@ const fragmentShader = `
 function TerrainMesh() {
   const meshRef = useRef<THREE.Mesh>(null);
   const elapsedRef = useRef(0);
-  const gl = useThree((state) => state.gl);
   const size = useThree((state) => state.size);
+  const dpr = useThree((state) => state.viewport.dpr);
   const shouldReduceMotion = useReducedMotion();
   const {
     palette,
@@ -208,8 +208,8 @@ function TerrainMesh() {
   } = siteContent.terrain;
 
   const resolution = useMemo(
-    () => gl.getDrawingBufferSize(new THREE.Vector2()),
-    [gl, size.height, size.width]
+    () => new THREE.Vector2(size.width * dpr, size.height * dpr),
+    [dpr, size.height, size.width]
   );
 
   const uniforms = useMemo(
