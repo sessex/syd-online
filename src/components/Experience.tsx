@@ -5,26 +5,20 @@ export default function Experience() {
   const { title, items } = siteContent.experience;
 
   return (
-    <section className="w-full max-w-5xl mx-auto px-6 md:px-12 py-16 md:py-24">
-      <div className="space-y-8">
-        <h2 className="text-[36px] leading-tight tracking-[-0.03em] font-bold font-helvetica">
+    <section className="mx-auto w-full max-w-[90rem] px-[6.25vw] py-[clamp(30px,3vw,48px)]">
+      <div>
+        <h2 className="mb-[0.18em] font-helvetica text-[clamp(22px,2.35vw,36px)] font-bold leading-[1.12] tracking-[-0.03em]">
           {title}
         </h2>
-        <div className="space-y-8">
-          {items.map((item, index) => (
+        <div className="space-y-[0.9em]">
+          {items.map((item) => (
             <Link
-              key={index}
+              key={item.name}
               href={item.href}
-              className="block group"
+              className="group block max-w-[82rem] font-helvetica text-[clamp(22px,2.35vw,36px)] font-normal leading-[1.12] tracking-[-0.03em]"
             >
-              <div className="space-y-2">
-                <h3 className="text-[36px] leading-tight tracking-[-0.03em] font-helvetica group-hover:underline">
-                  [ {item.name} ]
-                </h3>
-                <p className="text-[36px] leading-tight tracking-[-0.03em] font-helvetica text-gray-600">
-                  {item.description}
-                </p>
-              </div>
+              <h3 className="font-normal group-hover:underline">[ {item.name} ]</h3>
+              <p>{item.description}</p>
             </Link>
           ))}
         </div>

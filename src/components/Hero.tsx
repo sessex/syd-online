@@ -12,60 +12,53 @@ export default function Hero() {
   const [subtitleImageError, setSubtitleImageError] = useState(false);
 
   return (
-    <section className="relative min-h-[100dvh] flex items-center justify-center p-4 md:p-8">
-      {/* Rounded container with clipping */}
-      <div className="relative w-full max-w-7xl h-[calc(100dvh-2rem)] md:h-[calc(100dvh-4rem)] rounded-[2rem] md:rounded-[3rem] overflow-hidden">
-        {/* Terrain background - clipped by parent */}
+    <section className="relative h-[100dvh] p-[var(--page-gutter)]">
+      <div className="relative h-[calc(100dvh-var(--page-gutter)-var(--page-gutter))] w-full overflow-hidden rounded-[clamp(24px,3vw,46px)]">
         <TerrainBackground />
 
-        {/* Content overlay */}
-        <div className="relative z-10 h-full flex flex-col">
-          {/* Top: Name and subtitle */}
-          <div className="pt-8 md:pt-16 px-8 md:px-16">
-            <div className="flex flex-col gap-3 md:gap-4">
-              {/* Name */}
+        <div className="relative z-10 h-full">
+          <header className="absolute left-[clamp(24px,4.2vw,68px)] top-[clamp(26px,4.2vw,68px)] w-[min(76vw,760px)]">
+            <div className="flex flex-col items-start gap-[clamp(6px,0.8vw,12px)]">
               {!nameImageError ? (
-                <div className="relative h-16 md:h-24 w-full max-w-2xl">
+                <div className="relative aspect-[700/106] w-full">
                   <Image
                     src={name.image}
                     alt={name.fallback}
                     fill
                     className="object-contain object-left"
+                    sizes="(max-width: 768px) 76vw, 760px"
                     priority
                     onError={() => setNameImageError(true)}
                   />
                 </div>
               ) : (
-                <h1 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500">
+                <h1 className="font-helvetica text-[clamp(42px,6vw,92px)] font-normal leading-[0.9] tracking-[-0.05em] text-black">
                   {name.fallback}
                 </h1>
               )}
 
-              {/* Subtitle */}
               {!subtitleImageError ? (
-                <div className="relative h-8 md:h-12 w-full max-w-xl">
+                <div className="relative aspect-[1024/139] w-[74%]">
                   <Image
                     src={subtitle.image}
                     alt={subtitle.fallback}
                     fill
                     className="object-contain object-left"
+                    sizes="(max-width: 768px) 56vw, 560px"
                     priority
                     onError={() => setSubtitleImageError(true)}
                   />
                 </div>
               ) : (
-                <p className="text-xl md:text-2xl font-light text-white tracking-wide">
+                <p className="font-helvetica text-[clamp(18px,2.3vw,36px)] font-normal leading-none tracking-[-0.03em] text-black">
                   {subtitle.fallback}
                 </p>
               )}
             </div>
-          </div>
+          </header>
 
-          {/* Bottom: Model carousel - centered vertically in remaining space */}
-          <div className="flex-1 flex items-center justify-center px-4">
-            <div className="w-full max-w-6xl">
-              <ModelCarousel />
-            </div>
+          <div className="absolute inset-x-0 bottom-0">
+            <ModelCarousel />
           </div>
         </div>
       </div>

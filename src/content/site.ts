@@ -28,7 +28,6 @@ export const siteContent = {
   },
 
   about: {
-    title: 'About',
     paragraphs: [
       'sydney essex is a product engineer in nyc with 6 years of experience across creative startups and enterprise. her work has spanned browser video, generative image pipelines, and now agentic tools for designers.',
       'she cares about interfaces that feel good to use and about building the ai creative tools she\'d want as an instagram-obsessed content creator. currently curious about how technology can connect us back to the physical world in front of us.',
@@ -108,9 +107,11 @@ export const siteContent = {
 
   // Terrain tunables - expose for easy adjustment
   terrain: {
-    colors: ['#FF1493', '#00CED1', '#FFD700', '#9370DB', '#00FF00'],
-    animationSpeed: 0.0005,
-    contourBands: 12,
-    noiseScale: 1.5,
+    // pink, orange, lime, purple, lavender
+    colors: ['#ef2b83', '#ff7939', '#5bff45', '#3119e8', '#ce66ea'],
+    animationSpeed: 0.06,
+    contourBands: 8,
+    noiseScale: 1.35,
+    grainStrength: 0.12,
   },
 } as const;

@@ -1,24 +1,22 @@
 import { siteContent } from '@/content/site';
 
 export default function About() {
-  const { title, paragraphs } = siteContent.about;
+  const { paragraphs } = siteContent.about;
 
   return (
-    <section className="w-full max-w-5xl mx-auto px-6 md:px-12 py-16 md:py-24">
-      <div className="space-y-8">
-        <h2 className="text-[36px] leading-tight tracking-[-0.03em] font-bold font-helvetica">
-          {title}
-        </h2>
-        <div className="space-y-6">
-          {paragraphs.map((paragraph, index) => (
-            <p
-              key={index}
-              className="text-[36px] leading-tight tracking-[-0.03em] font-helvetica"
-            >
-              {paragraph}
-            </p>
-          ))}
-        </div>
+    <section
+      aria-label="About Sydney Essex"
+      className="mx-auto w-full max-w-[90rem] px-[6.25vw] pb-[clamp(32px,4vw,64px)] pt-[clamp(42px,5vw,76px)]"
+    >
+      <div className="max-w-[82rem] space-y-[1em]">
+        {paragraphs.map((paragraph) => (
+          <p
+            key={paragraph}
+            className="font-helvetica text-[clamp(22px,2.35vw,36px)] font-normal leading-[1.12] tracking-[-0.03em]"
+          >
+            {paragraph}
+          </p>
+        ))}
       </div>
     </section>
   );

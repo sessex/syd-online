@@ -4,48 +4,56 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { siteContent } from '@/content/site';
 import { useState } from 'react';
+import { useReducedMotion } from 'framer-motion';
 
 export default function ModelCarousel() {
   const { images } = siteContent.carousel;
   const [imageError, setImageError] = useState(false);
-
-  // Duplicate images for seamless infinite loop
-  const duplicatedImages = [...images, ...images, ...images];
+  const shouldReduceMotion = useReducedMotion();
 
   return (
-    <div className="relative w-full overflow-hidden py-8">
+    <div className="relative w-full overflow-hidden">
       <motion.div
-        className="flex gap-8"
-        animate={{
-          x: [0, -100 * images.length],
-        }}
-        transition={{
-          x: {
+        className="flex w-max"
+        animate={shouldReduceMotion ? undefined : { x: ['0%', '-50%'] }}
+        transition={
+          shouldReduceMotion
+            ? undefined
+            : {
+              x: {
             repeat: Infinity,
             repeatType: 'loop',
-            duration: 20,
+            duration: 24,
             ease: 'linear',
           },
-        }}
+            }
+        }
       >
-        {duplicatedImages.map((src, index) => (
+        {[0, 1].map((group) => (
           <div
-            key={index}
-            className="relative shrink-0 h-[300px] w-[200px] flex items-center justify-center"
+            key={group}
+            aria-hidden={group === 1}
+            className="flex shrink-0 items-end gap-[clamp(8px,1.4vw,24px)] pr-[clamp(8px,1.4vw,24px)]"
           >
-            {imageError ? (
-              <div className="w-full h-full bg-gradient-to-br from-pink-200 via-purple-200 to-blue-200 rounded-lg flex items-center justify-center text-gray-600 text-sm">
-                Model {(index % images.length) + 1}
+            {images.map((src, index) => (
+              <div
+                key={`${group}-${index}`}
+                className="relative h-[clamp(300px,57dvh,610px)] w-[clamp(150px,18.5vw,296px)] shrink-0"
+              >
+                {imageError ? (
+                  <div className="absolute inset-x-[20%] bottom-0 h-[82%] rounded-t-full bg-black/10" />
+                ) : (
+                  <Image
+                    src={src}
+                    alt={group === 0 ? 'Sydney holding a pink iBook' : ''}
+                    fill
+                    sizes="(max-width: 768px) 42vw, 19vw"
+                    className="object-contain object-bottom"
+                    onError={() => setImageError(true)}
+                  />
+                )}
               </div>
-            ) : (
-              <Image
-                src={src}
-                alt={`Model ${(index % images.length) + 1}`}
-                fill
-                className="object-contain"
-                onError={() => setImageError(true)}
-              />
-            )}
+            ))}
           </div>
         ))}
       </motion.div>
