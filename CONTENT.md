@@ -63,9 +63,9 @@ terrain: {
   warp: 1.1,
   detail: 5,
   contrast: 1.7,
-  spread: 0,
+  spread: 1,
   seed: 7,
-  grain: 0.3,
+  grain: 0.18,
   motion: {
     intensity: 0.6,
     loopSeconds: 2.5,

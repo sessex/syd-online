@@ -119,9 +119,9 @@ export const siteContent = {
     warp: 1.1,
     detail: 5,
     contrast: 1.7,
-    spread: 0,
+    spread: 1,
     seed: 7,
-    grain: 0.3,
+    grain: 0.18,
     blockiness: 0,
     bands: 6,
     motion: {
