@@ -58,18 +58,17 @@ Adjust visual parameters:
 
 ```typescript
 terrain: {
-  palette: ['#7A27BD', '#E6308E', '#F1347C', '#F07F32', '#EAFE53', '#71EA0C'],
+  palette: ['#510BF5', '#75FBFA', '#78FC4C', '#EAFE53', '#EE7F31', '#EA337B'],
   scale: 2.6,
   warp: 1.1,
   detail: 5,
-  contrast: 3.2,
-  offset: -0.22,
-  spread: -0.5,
+  contrast: 1.7,
+  spread: 0,
   seed: 7,
-  grain: 0.34,
+  grain: 0.3,
   motion: {
-    intensity: 0.04,
-    loopSeconds: 18,
+    intensity: 0.6,
+    loopSeconds: 2.5,
   },
 }
 ```

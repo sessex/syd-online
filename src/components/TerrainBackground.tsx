@@ -25,7 +25,6 @@ const fragmentShader = `
   uniform float uWarp;
   uniform float uDetail;
   uniform float uContrast;
-  uniform float uOffset;
   uniform float uSpread;
   uniform float uSeed;
   uniform float uGrain;
@@ -158,7 +157,7 @@ const fragmentShader = `
       uDetail
     );
     height = clamp(
-      (height - 0.5) * uContrast + 0.5 + uOffset,
+      (height - 0.5) * uContrast + 0.5,
       0.0,
       1.0
     );
@@ -167,7 +166,7 @@ const fragmentShader = `
     // Pixels at a boundary become one neighboring palette ink or the other.
     float grain = hash41(
       vec4(floor(gl_FragCoord.xy), 1.0, 1.0),
-      uSeed + 97.0
+      uSeed
     );
     height = clamp(
       height + (grain - 0.5) * uGrain,
@@ -200,7 +199,6 @@ function TerrainMesh() {
     warp,
     detail,
     contrast,
-    offset,
     spread,
     seed,
     grain,
@@ -225,7 +223,6 @@ function TerrainMesh() {
       uWarp: { value: warp },
       uDetail: { value: detail },
       uContrast: { value: contrast },
-      uOffset: { value: offset },
       uSpread: { value: spread },
       uSeed: { value: seed },
       uGrain: { value: grain },
@@ -242,7 +239,6 @@ function TerrainMesh() {
       grain,
       motion.intensity,
       motion.loopSeconds,
-      offset,
       palette,
       resolution,
       scale,
