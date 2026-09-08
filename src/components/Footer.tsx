@@ -15,9 +15,9 @@ export default function Footer() {
             fill
             sizes="(max-width: 768px) 88vw, 960px"
             unoptimized
-            className="object-contain"
+            className="pointer-events-none z-0 object-contain"
           />
-          <div className="absolute inset-0 flex">
+          <div className="absolute inset-0 z-10 flex">
             {links.map((link) => (
               <Link
                 key={link.name}
