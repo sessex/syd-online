@@ -17,13 +17,12 @@ export const siteContent = {
   },
 
   carousel: {
-    // Green blazer / pink iBook cutout repeated for marquee
     images: [
-      '/carousel/placeholder.png',
-      '/carousel/placeholder.png',
-      '/carousel/placeholder.png',
-      '/carousel/placeholder.png',
-      '/carousel/placeholder.png',
+      '/carousel/bunny.png',
+      '/carousel/bow2.png',
+      '/carousel/chicken.png',
+      '/carousel/werk.png',
+      '/carousel/dance.png',
     ],
   },
 

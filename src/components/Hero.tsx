@@ -40,7 +40,7 @@ export default function Hero() {
             </div>
           </header>
 
-          <div className="absolute inset-x-0 bottom-0">
+          <div className="absolute inset-x-0 bottom-8">
             <ModelCarousel />
           </div>
         </div>

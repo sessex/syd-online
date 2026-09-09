@@ -37,7 +37,7 @@ export default function ModelCarousel() {
               >
                 <Image
                   src={src}
-                  alt={group === 0 ? 'Sydney holding a pink iBook' : ''}
+                  alt={group === 0 ? 'Sydney doing something' : ''}
                   fill
                   sizes="(max-width: 768px) 42vw, 19vw"
                   loading={group === 0 ? 'eager' : 'lazy'}
