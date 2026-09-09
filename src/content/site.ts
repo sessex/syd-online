@@ -18,11 +18,11 @@ export const siteContent = {
 
   carousel: {
     images: [
-      '/carousel/bunny.png',
-      '/carousel/bow2.png',
-      '/carousel/chicken.png',
-      '/carousel/werk.png',
-      '/carousel/dance.png',
+      { src: '/carousel/bunny.png', width: 1024, height: 1536, alt: 'Sydney posing with a bunny in a floral outfit' },
+      { src: '/carousel/bow2.png', width: 1024, height: 1536, alt: 'Sydney in a black outfit with an oversized pink bow' },
+      { src: '/carousel/chicken.png', width: 1122, height: 1402, alt: 'Sydney holding a chicken in a yellow skirt' },
+      { src: '/carousel/werk.png', width: 1123, height: 1401, alt: 'Sydney seated with a coffee and a telephone' },
+      { src: '/carousel/dance.png', width: 1087, height: 1447, alt: 'Sydney kicking up a boot in a colorful outfit' },
     ],
   },
 
@@ -104,28 +104,14 @@ export const siteContent = {
     ],
   },
 
-  // Terrain tunables - expose for easy adjustment
+  // Terrain inks run from cool valleys to lavender peaks.
   terrain: {
-    palette: [
-      '#510BF5',
-      '#75FBFA',
-      '#78FC4C',
-      '#EAFE53',
-      '#EE7F31',
-      '#EA337B',
-    ],
-    scale: 2.6,
-    warp: 1.1,
-    detail: 5,
-    contrast: 1.7,
-    spread: 0,
-    seed: 7,
-    grain: 0.3,
-    blockiness: 0,
-    bands: 6,
+    palette: ['#510BF5', '#78FC4C', '#EE963E', '#EA337B', '#D6A1FA'],
+    dither: 0.12,
+    ditherCellSize: 2.5, // CSS pixels; stays consistent across display densities.
     motion: {
-      intensity: 0.6,
-      loopSeconds: 2.5,
+      intensity: 0.18,
+      loopSeconds: 56,
     },
   },
 } as const;

@@ -23,3 +23,44 @@ body {
 .font-helvetica {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
+
+@keyframes model-marquee {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+/* The static carousel remains scrollable with a keyboard or touch. */
+.model-marquee-group[aria-hidden="true"] {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .model-carousel {
+    overflow-x: hidden;
+  }
+
+  .model-marquee-group[aria-hidden="true"] {
+    display: flex;
+  }
+
+  .model-marquee-track {
+    animation: model-marquee 32s linear infinite;
+  }
+
+  .model-carousel:hover .model-marquee-track {
+    animation-play-state: paused;
+  }
+
+  /* Keyboard focus switches to the native, manually scrollable gallery. */
+  .model-carousel:focus-visible {
+    overflow-x: auto;
+  }
+
+  .model-carousel:focus-visible .model-marquee-track {
+    animation: none;
+  }
+
+  .model-carousel:focus-visible .model-marquee-group[aria-hidden="true"] {
+    display: none;
+  }
+}

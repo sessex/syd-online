@@ -1,3 +1,5 @@
+'use client';
+
 import Image from 'next/image';
 import { siteContent } from '@/content/site';
 
@@ -5,42 +7,38 @@ export default function ModelCarousel() {
   const { images } = siteContent.carousel;
 
   return (
-    <div className="relative w-full overflow-hidden">
-      <style>{`
-        @keyframes model-marquee {
-          from { transform: translate3d(0, 0, 0); }
-          to { transform: translate3d(-50%, 0, 0); }
+    <div
+      role="region"
+      aria-roledescription="carousel"
+      aria-label="Sydney’s photo carousel. Scroll to explore."
+      tabIndex={0}
+      onBlur={(event) => {
+        // Autoplay resumes from its own origin after keyboard exploration.
+        if (window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+          event.currentTarget.scrollLeft = 0;
         }
-
-        .model-marquee-track {
-          animation: model-marquee 24s linear infinite;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .model-marquee-track {
-            animation: none;
-            transform: none;
-          }
-        }
-      `}</style>
+      }}
+      className="model-carousel relative w-full overflow-x-auto outline-offset-[-4px]"
+    >
       <div className="model-marquee-track flex w-max">
         {[0, 1].map((group) => (
           <div
             key={group}
             aria-hidden={group === 1}
-            className="flex shrink-0 items-end gap-[clamp(8px,1.4vw,24px)] pr-[clamp(8px,1.4vw,24px)]"
+            className="model-marquee-group flex shrink-0 items-end gap-[clamp(8px,1vw,16px)] pr-[clamp(8px,1vw,16px)]"
           >
-            {images.map((src, index) => (
+            {images.map((item, index) => (
               <div
                 key={`${group}-${index}`}
-                className="relative h-[clamp(300px,57dvh,610px)] w-[clamp(150px,18.5vw,296px)] shrink-0"
+                className="relative h-[var(--cutout-height)] shrink-0"
+                style={{ aspectRatio: `${item.width} / ${item.height}` }}
               >
                 <Image
-                  src={src}
-                  alt={group === 0 ? 'Sydney doing something' : ''}
+                  src={item.src}
+                  alt={group === 0 ? item.alt : ''}
                   fill
-                  sizes="(max-width: 768px) 42vw, 19vw"
-                  loading={group === 0 ? 'eager' : 'lazy'}
+                  sizes="(max-width: 640px) 85vw, (max-width: 1600px) 34vw, 545px"
+                  loading="eager"
                   unoptimized
                   className="object-contain object-bottom"
                 />
