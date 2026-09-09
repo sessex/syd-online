@@ -7,11 +7,11 @@ export const siteContent = {
   hero: {
     // Brand assets - prefer transparent PNG, fallback to SVG or text
     name: {
-      image: '/brand/name.png',
+      image: '/brand/name-sparkle.png',
       fallback: 'SYDNEY ESSEX',
     },
     subtitle: {
-      image: '/brand/subtitle.png',
+      image: '/brand/subtitle-sparkle.png',
       fallback: 'product engineer based in nyc',
     },
   },
@@ -104,14 +104,4 @@ export const siteContent = {
     ],
   },
 
-  // Terrain inks run from cool valleys to lavender peaks.
-  terrain: {
-    palette: ['#510BF5', '#78FC4C', '#EE963E', '#EA337B', '#D6A1FA'],
-    dither: 0.12,
-    ditherCellSize: 2.5, // CSS pixels; stays consistent across display densities.
-    motion: {
-      intensity: 0.18,
-      loopSeconds: 56,
-    },
-  },
 } as const;
