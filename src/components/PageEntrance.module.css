@@ -1,0 +1,35 @@
+.entrance {
+  min-height: 100svh;
+  animation: page-arrive .8s .1s both;
+}
+
+.entrance :global(header) {
+  animation: element-arrive .65s .25s both;
+}
+
+.entrance :global(header p) {
+  animation: element-arrive .65s .35s both;
+}
+
+.entrance :global(.model-carousel) {
+  animation: element-arrive .7s .4s both;
+}
+
+@keyframes page-arrive {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes element-arrive {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entrance,
+  .entrance :global(header),
+  .entrance :global(header p),
+  .entrance :global(.model-carousel) {
+    animation: page-arrive .12s both;
+  }
+}
