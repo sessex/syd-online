@@ -1,14 +1,28 @@
 'use client';
 
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { useReducedMotion } from 'framer-motion';
-import { useMemo, useRef } from 'react';
+import { Component, useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import * as THREE from 'three';
 import { siteContent } from '@/content/site';
 
+const motionQuery = '(prefers-reduced-motion: reduce)';
+
+function subscribeToMotionPreference(onChange: () => void) {
+  const query = window.matchMedia(motionQuery);
+  query.addEventListener('change', onChange);
+  return () => query.removeEventListener('change', onChange);
+}
+
+function getMotionPreference() {
+  return window.matchMedia(motionQuery).matches;
+}
+
+function getServerMotionPreference() {
+  return true;
+}
+
 const vertexShader = `
   varying vec2 vUv;
-
   void main() {
     vUv = uv;
     gl_Position = vec4(position.xy, 0.0, 1.0);
@@ -17,276 +31,189 @@ const vertexShader = `
 
 const fragmentShader = `
   precision highp float;
-
   uniform float uTime;
-  uniform vec2 uResolution;
-  uniform vec3 uPalette[6];
-  uniform float uScale;
-  uniform float uWarp;
-  uniform float uDetail;
-  uniform float uContrast;
-  uniform float uSpread;
-  uniform float uSeed;
-  uniform float uGrain;
-  uniform float uBlockiness;
-  uniform float uBands;
+  uniform float uDpr;
+  uniform vec3 uPalette[5];
+  uniform float uDither;
+  uniform float uDitherCellSize;
   uniform float uMotionIntensity;
   uniform float uLoopSeconds;
   varying vec2 vUv;
 
-  float fadeCubic(float value) {
-    return value * value * (3.0 - 2.0 * value);
+  float hash(vec2 p) {
+    vec3 q = fract(vec3(p.xyx) * 0.1031);
+    q += dot(q, q.yzx + 33.33);
+    return fract((q.x + q.y) * q.z);
   }
 
-  // Dave Hoskins-style integer-cell hash. It avoids the visible sine lattice
-  // produced by the common fract(sin(dot())) shortcut.
-  float hash41(vec4 cell, float seed) {
-    vec4 p = fract(
-      (cell + seed * 0.0137)
-      * vec4(0.1031, 0.1030, 0.0973, 0.1099)
+  float noise(vec2 p) {
+    vec2 cell = floor(p);
+    vec2 f = fract(p);
+    f = f * f * (3.0 - 2.0 * f);
+    return mix(
+      mix(hash(cell), hash(cell + vec2(1.0, 0.0)), f.x),
+      mix(hash(cell + vec2(0.0, 1.0)), hash(cell + 1.0), f.x),
+      f.y
     );
-    p += dot(p, p.wzxy + 33.33);
-    return fract((p.x + p.y) * (p.z + p.w));
   }
 
-  float valueNoise4(vec4 point, float seed) {
-    vec4 cell = floor(point);
-    vec4 fraction = fract(point);
-    vec4 blend = vec4(
-      fadeCubic(fraction.x),
-      fadeCubic(fraction.y),
-      fadeCubic(fraction.z),
-      fadeCubic(fraction.w)
-    );
-
-    float n0000 = hash41(cell + vec4(0.0, 0.0, 0.0, 0.0), seed);
-    float n1000 = hash41(cell + vec4(1.0, 0.0, 0.0, 0.0), seed);
-    float n0100 = hash41(cell + vec4(0.0, 1.0, 0.0, 0.0), seed);
-    float n1100 = hash41(cell + vec4(1.0, 1.0, 0.0, 0.0), seed);
-    float n0010 = hash41(cell + vec4(0.0, 0.0, 1.0, 0.0), seed);
-    float n1010 = hash41(cell + vec4(1.0, 0.0, 1.0, 0.0), seed);
-    float n0110 = hash41(cell + vec4(0.0, 1.0, 1.0, 0.0), seed);
-    float n1110 = hash41(cell + vec4(1.0, 1.0, 1.0, 0.0), seed);
-    float n0001 = hash41(cell + vec4(0.0, 0.0, 0.0, 1.0), seed);
-    float n1001 = hash41(cell + vec4(1.0, 0.0, 0.0, 1.0), seed);
-    float n0101 = hash41(cell + vec4(0.0, 1.0, 0.0, 1.0), seed);
-    float n1101 = hash41(cell + vec4(1.0, 1.0, 0.0, 1.0), seed);
-    float n0011 = hash41(cell + vec4(0.0, 0.0, 1.0, 1.0), seed);
-    float n1011 = hash41(cell + vec4(1.0, 0.0, 1.0, 1.0), seed);
-    float n0111 = hash41(cell + vec4(0.0, 1.0, 1.0, 1.0), seed);
-    float n1111 = hash41(cell + vec4(1.0, 1.0, 1.0, 1.0), seed);
-
-    float x000 = mix(n0000, n1000, blend.x);
-    float x100 = mix(n0100, n1100, blend.x);
-    float x010 = mix(n0010, n1010, blend.x);
-    float x110 = mix(n0110, n1110, blend.x);
-    float x001 = mix(n0001, n1001, blend.x);
-    float x101 = mix(n0101, n1101, blend.x);
-    float x011 = mix(n0011, n1011, blend.x);
-    float x111 = mix(n0111, n1111, blend.x);
-    float y00 = mix(x000, x100, blend.y);
-    float y10 = mix(x010, x110, blend.y);
-    float y01 = mix(x001, x101, blend.y);
-    float y11 = mix(x011, x111, blend.y);
-    float z0 = mix(y00, y10, blend.z);
-    float z1 = mix(y01, y11, blend.z);
-    return mix(z0, z1, blend.w);
+  float hill(vec2 p, vec2 center, vec2 radius) {
+    vec2 q = (p - center) / radius;
+    return exp(-dot(q, q));
   }
 
-  float fbm4(vec4 point, float seed, float octaves) {
-    float amplitude = 0.5;
-    float frequency = 1.0;
-    float sum = 0.0;
-    float normalization = 0.0;
-
-    for (int octave = 0; octave < 7; octave++) {
-      float enabled = 1.0
-        - step(octaves, float(octave) + 0.5);
-      float octaveSeed = seed + float(octave) * 1319.0;
-      vec4 samplePoint = vec4(
-        point.xy * frequency,
-        point.zw
-      );
-      sum += amplitude
-        * valueNoise4(samplePoint, octaveSeed)
-        * enabled;
-      normalization += amplitude * enabled;
-      amplitude *= 0.5;
-      frequency *= 2.0;
-    }
-
-    return sum / max(normalization, 0.0001);
+  float bayer2(vec2 p) {
+    p = mod(p, 2.0);
+    return mod(p.x + p.y, 2.0) * 2.0 + p.y;
   }
 
-  vec3 paletteColor(float index) {
-    if (index < 0.5) return uPalette[0];
-    if (index < 1.5) return uPalette[1];
-    if (index < 2.5) return uPalette[2];
-    if (index < 3.5) return uPalette[3];
-    if (index < 4.5) return uPalette[4];
-    return uPalette[5];
+  vec3 ink(float h) {
+    vec3 color = mix(uPalette[0], uPalette[1], smoothstep(0.12, 0.30, h));
+    color = mix(color, uPalette[2], smoothstep(0.30, 0.48, h));
+    color = mix(color, uPalette[3], smoothstep(0.48, 0.62, h));
+    return mix(color, uPalette[4], smoothstep(0.70, 0.98, h));
   }
 
   void main() {
-    vec2 pixel = gl_FragCoord.xy;
-    if (uBlockiness >= 1.0) {
-      pixel = floor(pixel / uBlockiness) * uBlockiness;
-    }
+    float phase = uTime / uLoopSeconds * 6.28318530718;
+    // The color masses breathe locally; the texture stays fixed to the page.
+    vec2 drift = vec2(sin(phase), cos(phase) - 1.0) * uMotionIntensity;
+    vec2 p = vUv;
+    vec2 warp = vec2(
+      noise(p * 3.5 + drift + vec2(7.0, 2.0)),
+      noise(p * 3.5 - drift + vec2(2.0, 9.0))
+    ) - 0.5;
+    p += warp * 0.23 + drift * 0.16;
 
-    // Both axes divide by width, matching playgrnd's isotropic field domain.
-    vec2 domain = pixel / uResolution.x * uScale;
-    float angle = fract(uTime / uLoopSeconds) * 6.28318530718;
-    vec2 extra = vec2(cos(angle), sin(angle)) * uMotionIntensity;
+    // A quiet pink center leaves room for the cutouts. Cooler peaks and
+    // narrow warm/green contours gather near the edges, as in the reference.
+    float height = 0.65 + (noise(p * 5.0 + 4.0) - 0.5) * 0.12;
+    height += 0.39 * hill(p, vec2(0.56, -0.06), vec2(0.26, 0.32));
+    height += 0.29 * hill(p, vec2(0.67, 0.96), vec2(0.24, 0.34));
+    height -= 0.72 * hill(p, vec2(-0.09, 0.58), vec2(0.24, 0.30));
+    height -= 0.62 * hill(p, vec2(0.99, 0.20), vec2(0.19, 0.15));
+    height -= 0.23 * hill(p, vec2(1.02, 0.96), vec2(0.15, 0.19));
 
-    float warpX = fbm4(
-      vec4(domain + vec2(5.2, 1.3), extra),
-      uSeed + 11.0,
-      2.0
-    );
-    float warpY = fbm4(
-      vec4(domain + vec2(9.1, 7.7), extra),
-      uSeed + 29.0,
-      2.0
-    );
-    vec2 warpedDomain = domain
-      + uWarp * (vec2(warpX, warpY) - 0.5) * 2.0;
-
-    float height = fbm4(
-      vec4(warpedDomain, extra),
-      uSeed,
-      uDetail
-    );
-    height = clamp(
-      (height - 0.5) * uContrast + 0.5,
-      0.0,
-      1.0
-    );
-
-    // Static device-pixel grain perturbs the scalar before quantization.
-    // Pixels at a boundary become one neighboring palette ink or the other.
-    float grain = hash41(
-      vec4(floor(gl_FragCoord.xy), 1.0, 1.0),
-      uSeed
-    );
-    height = clamp(
-      height + (grain - 0.5) * uGrain,
-      0.0,
-      1.0
-    );
-    height = pow(height, exp2(-uSpread));
-
-    float colorIndex = clamp(
-      floor(height * uBands),
-      0.0,
-      uBands - 1.0
-    );
-    vec3 color = paletteColor(colorIndex);
-
+    // Four-by-four ordered dithering at a stable CSS-pixel scale. A tiny
+    // static irregularity softens the grid without introducing moving grain.
+    vec2 pixel = floor(gl_FragCoord.xy / uDpr / uDitherCellSize);
+    float ordered = (4.0 * bayer2(pixel) + bayer2(floor(pixel / 2.0)) + 0.5) / 16.0;
+    height += (ordered - 0.5) * uDither;
+    height += (hash(pixel) - 0.5) * 0.015;
+    vec3 color = ink(clamp(height, 0.0, 1.0));
+    color *= 1.0 + (ordered - 0.5) * 0.065;
     gl_FragColor = vec4(color, 1.0);
     #include <colorspace_fragment>
   }
 `;
 
-function TerrainMesh() {
-  const meshRef = useRef<THREE.Mesh>(null);
+function TerrainMesh({ animated }: { animated: boolean }) {
   const elapsedRef = useRef(0);
-  const size = useThree((state) => state.size);
+  const materialRef = useRef<THREE.ShaderMaterial>(null);
   const dpr = useThree((state) => state.viewport.dpr);
-  const shouldReduceMotion = useReducedMotion();
-  const {
-    palette,
-    scale,
-    warp,
-    detail,
-    contrast,
-    spread,
-    seed,
-    grain,
-    blockiness,
-    bands,
-    motion,
-  } = siteContent.terrain;
-
-  const resolution = useMemo(
-    () => new THREE.Vector2(size.width * dpr, size.height * dpr),
-    [dpr, size.height, size.width]
-  );
-
+  const invalidate = useThree((state) => state.invalidate);
+  const { palette, dither, ditherCellSize, motion } = siteContent.terrain;
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
-      uResolution: { value: resolution },
-      uPalette: {
-        value: palette.map((color) => new THREE.Color(color)),
-      },
-      uScale: { value: scale },
-      uWarp: { value: warp },
-      uDetail: { value: detail },
-      uContrast: { value: contrast },
-      uSpread: { value: spread },
-      uSeed: { value: seed },
-      uGrain: { value: grain },
-      uBlockiness: { value: blockiness },
-      uBands: { value: bands },
+      uDpr: { value: dpr },
+      uPalette: { value: palette.map((color) => new THREE.Color(color)) },
+      uDither: { value: dither },
+      uDitherCellSize: { value: ditherCellSize },
       uMotionIntensity: { value: motion.intensity },
       uLoopSeconds: { value: motion.loopSeconds },
     }),
-    [
-      bands,
-      blockiness,
-      contrast,
-      detail,
-      grain,
-      motion.intensity,
-      motion.loopSeconds,
-      palette,
-      resolution,
-      scale,
-      seed,
-      spread,
-      warp,
-    ]
+    [dither, ditherCellSize, dpr, motion.intensity, motion.loopSeconds, palette]
   );
 
-  useFrame((_, delta) => {
-    if (!meshRef.current || shouldReduceMotion) {
-      return;
-    }
+  useEffect(() => {
+    if (!animated) return;
+    const timer = window.setInterval(invalidate, 1000 / 24);
+    return () => window.clearInterval(timer);
+  }, [animated, invalidate]);
 
-    elapsedRef.current =
-      (elapsedRef.current + delta) % motion.loopSeconds;
-    const material = meshRef.current.material as THREE.ShaderMaterial;
-    material.uniforms.uTime.value = elapsedRef.current;
+  useFrame((_, delta) => {
+    if (!animated || !materialRef.current) return;
+    // A resumed demand loop can report the entire time spent offscreen.
+    elapsedRef.current = (elapsedRef.current + Math.min(delta, 0.1)) % motion.loopSeconds;
+    materialRef.current.uniforms.uTime.value = elapsedRef.current;
   });
 
   return (
-    <mesh ref={meshRef} frustumCulled={false}>
+    <mesh frustumCulled={false}>
       <planeGeometry args={[2, 2]} />
       <shaderMaterial
+        ref={materialRef}
         vertexShader={vertexShader}
         fragmentShader={fragmentShader}
         uniforms={uniforms}
         toneMapped={false}
+        depthTest={false}
+        depthWrite={false}
       />
     </mesh>
   );
 }
 
+class TerrainFallback extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+
+  render() {
+    return this.state.failed ? null : this.props.children;
+  }
+}
+
 export default function TerrainBackground() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const shouldReduceMotion = useSyncExternalStore(
+    subscribeToMotionPreference,
+    getMotionPreference,
+    getServerMotionPreference
+  );
+  const [onScreen, setOnScreen] = useState(false);
+  const [pageVisible, setPageVisible] = useState(true);
+
+  useEffect(() => {
+    const element = containerRef.current;
+    if (!element) return;
+    const observer = new IntersectionObserver(([entry]) => setOnScreen(entry.isIntersecting));
+    observer.observe(element);
+    const updateVisibility = () => setPageVisible(document.visibilityState === 'visible');
+    updateVisibility();
+    document.addEventListener('visibilitychange', updateVisibility);
+    return () => {
+      observer.disconnect();
+      document.removeEventListener('visibilitychange', updateVisibility);
+    };
+  }, []);
+
+  const animated = shouldReduceMotion === false && onScreen && pageVisible;
+
   return (
-    <div className="pointer-events-none absolute inset-0">
-      <Canvas
-        camera={{ position: [0, 0, 1], fov: 75 }}
-        dpr={[1, 1.5]}
-        flat
-        gl={{
-          alpha: false,
-          antialias: false,
-          powerPreference: 'high-performance',
-        }}
-      >
-        <TerrainMesh />
-      </Canvas>
+    <div
+      ref={containerRef}
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0"
+      style={{
+        background: 'radial-gradient(ellipse at 58% 100%, #d6a1fa, transparent 45%), radial-gradient(ellipse at 65% 0%, #d6a1fa, transparent 45%), #ea337b',
+      }}
+    >
+      <TerrainFallback>
+        <Canvas
+          frameloop="demand"
+          camera={{ position: [0, 0, 1] }}
+          dpr={[1, 1.5]}
+          flat
+          fallback={null}
+          gl={{ alpha: false, antialias: false, powerPreference: 'low-power' }}
+        >
+          <TerrainMesh animated={animated} />
+        </Canvas>
+      </TerrainFallback>
     </div>
   );
 }
