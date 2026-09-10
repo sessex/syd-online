@@ -47,9 +47,9 @@ export const siteContent = {
       {
         name: 'iris',
         blurb: 'color hunting with friends',
-        description: 'an iOS app for color hunting with friends. currently a work in progress.',
+        description: 'an iOS app for color hunting with friends.',
         href: '#',
-        linkStatus: 'in development for iOS',
+        linkStatus: 'coming soon',
         dateLabel: '2026',
         dateDescription: '2026',
       },
@@ -86,7 +86,7 @@ export const siteContent = {
       {
         name: 'vbn',
         description: 'browser-based video conferencing and event streaming platform',
-        href: '#',
+        href: 'https://www.linkedin.com/company/vbnxyz/',
         blurb: 'video calls & live streaming',
         dateLabel: '2021–23',
         dateDescription: 'September 2021 to February 2023',

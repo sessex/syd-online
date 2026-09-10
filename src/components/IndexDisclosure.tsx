@@ -76,11 +76,11 @@ export default function IndexDisclosure({ item }: { item: IndexItem }) {
             <p className={styles.description}>{item.description}</p>
             {item.href !== '#' ? (
               <a className={styles.visit} href={item.href} target="_blank" rel="noopener noreferrer">
-                Visit {item.name}<span aria-hidden="true"> ↗</span>
+                visit {item.name}<span aria-hidden="true"> ↗</span>
               </a>
-            ) : (
-              <span className={styles.linkStatus}>{item.linkStatus ?? 'link coming soon'}</span>
-            )}
+            ) : item.linkStatus ? (
+              <span className={styles.linkStatus}>{item.linkStatus}</span>
+            ) : null}
           </div>
         </div>
       </div>

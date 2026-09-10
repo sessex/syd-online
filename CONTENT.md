@@ -86,7 +86,8 @@ Body sections use self-hosted Raveo, with a 43px introductory lead and 46px
 item titles on desktop. On phones these become 34px and 30px. Dates and
 one-line blurbs stay visible; the full row opens the description and visit link.
 Use `href: '#'` for an unavailable destination. It renders a status instead of a
-link, with optional `linkStatus` copy such as Iris's "in development for iOS".
+link only when `linkStatus` is present, such as Iris's "coming soon". Without
+`linkStatus`, the disclosure renders no link or fallback copy.
 
 The title hover adds a short pink/green chroma wave. Disclosure transitions take
 320ms to open and 280ms to close. Both honor reduced motion. The timings, colors,

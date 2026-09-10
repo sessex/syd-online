@@ -261,9 +261,10 @@ def main() -> int:
                 "asimov collective": "https://www.asimovcollective.com/",
                 "goldman sachs": "#",
                 "hypno": "https://app.hypno.com/",
-                "vbn": "#",
+                "vbn": "https://www.linkedin.com/company/vbnxyz/",
                 "artswrk": "https://artswrk.com/",
             }
+            expected_statuses = {"iris": "coming soon"}
             checked: dict[str, str] = {}
             for name, href in expected_links.items():
                 button = page.get_by_role("button", name=name, exact=True)
@@ -273,9 +274,12 @@ def main() -> int:
                 panel = page.locator("[id=" + repr(button.get_attribute("aria-controls")) + "]")
                 if href == "#":
                     expect(panel.locator("a")).to_have_count(0)
-                    expect(panel.get_by_text("in development for iOS" if name == "iris" else "link coming soon")).to_be_visible()
+                    if status := expected_statuses.get(name):
+                        expect(panel.get_by_text(status, exact=True)).to_be_visible()
+                    else:
+                        expect(panel.locator("[class*='linkStatus']")).to_have_count(0)
                 else:
-                    link = panel.get_by_role("link", name="Visit " + name, exact=True)
+                    link = panel.get_by_role("link", name="visit " + name, exact=True)
                     expect(link).to_have_attribute("href", href)
                     expect(link).to_be_visible()
                 checked[name] = href
@@ -292,7 +296,7 @@ def main() -> int:
                 context.route("https://trouv.vercel.app/", intercept)
                 probe.get_by_role("button", name="trouvaille", exact=True).click()
                 with context.expect_event("request", predicate=lambda request: request.url == "https://trouv.vercel.app/") as request_info:
-                    probe.get_by_role("link", name="Visit trouvaille", exact=True).click(no_wait_after=True)
+                    probe.get_by_role("link", name="visit trouvaille", exact=True).click(no_wait_after=True)
                 requested_url = request_info.value.url
             finally:
                 probe.close()

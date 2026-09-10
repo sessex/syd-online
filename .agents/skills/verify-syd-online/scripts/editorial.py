@@ -63,7 +63,7 @@ with sync_playwright() as pw:
         panel = panel_for(page, first)
         settled(panel, True)
         first.press('Tab')
-        expect(page.get_by_role('link', name='Visit trouvaille', exact=True)).to_be_focused()
+        expect(page.get_by_role('link', name='visit trouvaille', exact=True)).to_be_focused()
         page.keyboard.press('Shift+Tab')
         first.press('Space')
         expect(panel).to_have_attribute('inert', '')
