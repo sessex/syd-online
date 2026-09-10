@@ -3,7 +3,7 @@
 :root {
   --background: #ffffff;
   --foreground: #0a0a0a;
-  --page-gutter: clamp(18px, 2.1vw, 32px);
+  --page-gutter: 16px;
 }
 
 @theme inline {
@@ -45,10 +45,6 @@ body {
 
   .model-marquee-track {
     animation: model-marquee 32s linear infinite;
-  }
-
-  .model-carousel:hover .model-marquee-track {
-    animation-play-state: paused;
   }
 
   /* Keyboard focus switches to the native, manually scrollable gallery. */
