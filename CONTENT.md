@@ -18,7 +18,8 @@ Place PNG files in `public/brand/`:
 
 - `name.png` - "SYDNEY ESSEX" bead lettering (transparent PNG)
 - `subtitle.png` - "product engineer based in nyc" (transparent PNG)
-- `footer.png` - Combined X / LinkedIn / GitHub / email bead strip
+- `footer-x.png`, `footer-linkedin.png`, `footer-github.png`, and `footer-email.png` contain the individual silver gem words. Each footer link owns one image and its native dimensions in `src/content/site.ts`.
+- `footer-star.png` is the decorative silver gem separator between links.
 
 ### Carousel Images
 Place model cutout PNGs in `public/carousel/`:
