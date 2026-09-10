@@ -19,7 +19,7 @@ The hero photo carousel continuously moves when unfocused and becomes a native h
 
 Preconditions:
 
-- The production app is healthy and the entrance state has completed.
+- The production app is healthy and the carousel keyboard/blur hydration check has passed.
 - The browser viewport is wide enough for the hero and carousel to render normally.
 
 - **Focus the gallery.** Find the region `Sydney’s photo carousel. Scroll to explore.`. Run `python3 .agents/skills/verify-syd-online/scripts/verify.py --url "$URL" --evidence-dir "$EVIDENCE" --feature photo-carousel`. Focus it directly through the browser input API.

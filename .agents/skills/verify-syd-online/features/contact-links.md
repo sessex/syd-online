@@ -1,6 +1,6 @@
 # Contact links
 
-The footer contact strip gives users four labeled destinations: X, LinkedIn, GitHub, and email.
+The footer gives users four labeled destinations, X, LinkedIn, GitHub, and email.
 
 ## Sub-features
 
@@ -12,14 +12,14 @@ The footer contact strip gives users four labeled destinations: X, LinkedIn, Git
 ## How to get to it (user POV)
 
 - Scroll to the footer contact strip.
-- Choose one of the four equally sized labeled areas: `x`, `linkedin`, `github`, or `email`.
+- Choose `x`, `linkedin`, `github`, or `email` in the Contact navigation.
 
 ## Driving it with verify.py
 
 Preconditions:
 
-- The production app is healthy and the entrance state has completed.
-- The footer strip image has loaded; link labels remain available through accessibility even though the visual labels are baked into the image.
+- The production app is healthy and the carousel keyboard/blur hydration check has passed.
+- The footer lettering images have loaded. Their alt text provides each link's accessible name.
 
 - **Reach the footer.** Run `python3 .agents/skills/verify-syd-online/scripts/verify.py --url "$URL" --evidence-dir "$EVIDENCE" --feature contact-links`. Scroll the real footer into view.
 - **Inspect destinations.** Match the four links by their exact accessible names and verify `https://x.com/waifu101`, `https://www.linkedin.com/in/sydneyessex/`, `https://github.com/sessex`, and `mailto:sydneyressex@gmail.com`.
@@ -27,6 +27,6 @@ Preconditions:
 
 ## Gotchas
 
-- The visible contact copy is one image, but the interactive areas are four separate accessible links.
+- Each contact link contains its own lettering image. Separators are decorative.
 - Do not activate `mailto:` in automation; opening an external mail composer is outside the app and may change user state.
 - Verifying hrefs proves this app's wiring, not the availability or ownership of third-party profiles.

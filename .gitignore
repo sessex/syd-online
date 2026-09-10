@@ -48,3 +48,4 @@ next-env.d.ts
 
 .verification/
 .claude/
+.playwright-mcp/

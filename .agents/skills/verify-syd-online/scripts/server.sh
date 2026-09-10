@@ -15,9 +15,10 @@ case "$run_id" in
 esac
 
 script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-repo_root=$(CDPATH= cd -- "$script_dir/../../../.." && pwd)
-runtime_dir="/tmp/syd-online-verify-$run_id"
-lock_dir="/tmp/syd-online-verify.lock"
+repo_root=$(CDPATH= cd -- "$script_dir/../../../.." && pwd -P)
+checkout_key=$(printf '%s' "$repo_root" | shasum -a 256 | cut -d ' ' -f 1)
+runtime_dir="/tmp/syd-online-verify-$checkout_key-$run_id"
+lock_dir="/tmp/syd-online-verify-$checkout_key.lock"
 lock_owner_file="$lock_dir/run-id"
 pid_file="$runtime_dir/server.pid"
 port_file="$runtime_dir/server.port"
@@ -66,6 +67,24 @@ release_owned_lock() {
   fi
 }
 
+cleanup_failed_start() {
+  failure_status=$?
+  trap - EXIT INT TERM
+  set +e
+  if [ -n "$server_pid" ] && kill -0 "$server_pid" 2>/dev/null; then
+    kill "$server_pid"
+    wait "$server_pid" 2>/dev/null
+  fi
+  if [ "$runtime_owned" -eq 1 ]; then
+    [ ! -s "$build_log" ] || tail -n 60 "$build_log" >&2
+    [ ! -s "$log_file" ] || tail -n 60 "$log_file" >&2
+    rm -r "$runtime_dir"
+  fi
+  rm -f "$lock_owner_file"
+  rmdir "$lock_dir"
+  exit "$failure_status"
+}
+
 case "$command_name" in
   start)
     port=${3:-4173}
@@ -81,11 +100,17 @@ case "$command_name" in
       echo "verification is already owned by run $active_owner; clean it up before starting another run" >&2
       exit 1
     fi
+    runtime_owned=0
+    server_pid=''
+    trap cleanup_failed_start EXIT
+    trap 'exit 130' INT
+    trap 'exit 143' TERM
     printf '%s\n' "$run_id" > "$lock_owner_file"
     mkdir -m 700 "$runtime_dir"
+    runtime_owned=1
     printf '%s\n' "$port" > "$port_file"
     if ! (cd "$repo_root" && npm run build) > "$build_log" 2>&1; then
-      echo "production build failed; see $build_log" >&2
+      echo "production build failed" >&2
       exit 1
     fi
     (
@@ -98,7 +123,7 @@ case "$command_name" in
     attempt=0
     while [ "$attempt" -lt 60 ]; do
       if ! kill -0 "$server_pid" 2>/dev/null; then
-        echo "server exited before readiness; see $log_file" >&2
+        echo "server exited before readiness" >&2
         exit 1
       fi
       if curl --silent --show-error --fail --max-time 2 "http://127.0.0.1:$port/" 2>/dev/null | rg -q '<title>Sydney Essex - Product Engineer</title>'; then
@@ -108,7 +133,8 @@ case "$command_name" in
       attempt=$((attempt + 1))
       sleep 0.25
     done
-    [ "$ready" -eq 1 ] || { echo "server did not become ready; see $log_file" >&2; exit 1; }
+    [ "$ready" -eq 1 ] || { echo "server did not become ready" >&2; exit 1; }
+    trap - EXIT INT TERM
     echo "READY http://127.0.0.1:$port pid=$server_pid"
     ;;
   doctor)
@@ -129,6 +155,11 @@ PY
     echo "HEALTHY http://127.0.0.1:$recorded_port pid=$recorded_pid build=$build_id"
     ;;
   stop)
+    if [ ! -e "$runtime_dir" ] && [ ! -e "$lock_dir" ]; then
+      echo "CLEAN no runtime for $run_id"
+      exit 0
+    fi
+    require_lock_owner
     if [ ! -e "$runtime_dir" ]; then
       release_owned_lock
       echo "CLEAN no runtime for $run_id"

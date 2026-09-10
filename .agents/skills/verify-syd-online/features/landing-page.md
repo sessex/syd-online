@@ -20,7 +20,7 @@ The landing page introduces Sydney Essex, presents the about copy, lists project
 Preconditions:
 
 - The production app is healthy at the URL reported by doctor.
-- JavaScript is enabled and the entrance state has completed.
+- JavaScript is enabled and the carousel keyboard/blur hydration check has passed.
 
 - **Open the site.** Navigate to `/` and wait for the network to settle. Run `python3 .agents/skills/verify-syd-online/scripts/verify.py --url "$URL" --evidence-dir "$EVIDENCE" --feature landing-page`. The title is `Sydney Essex - Product Engineer`.
 - **Confirm identity.** Find the region `Introducing Sydney Essex` and level-one heading `SYDNEY ESSEX`. Both are visible.
@@ -29,6 +29,6 @@ Preconditions:
 
 ## Gotchas
 
-- The entrance overlay can temporarily cover the hero; wait for `data-entrance="complete"` instead of using a fixed short sleep.
+- Wait for finite page animations and prove hydration with the carousel keyboard/blur check.
 - The hero's visible title is an image whose accessible name comes from its alt text.
 - A server response alone does not prove client rendering; wait for JavaScript and inspect the real page.

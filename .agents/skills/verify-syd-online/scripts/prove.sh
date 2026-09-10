@@ -11,9 +11,10 @@ evidence_dir=${3:-"$repo_root/.verification/evidence/$run_id"}
 cleanup() {
   "$script_dir/server.sh" stop "$run_id"
 }
-trap cleanup EXIT INT TERM
-
 "$script_dir/server.sh" start "$run_id" "$port"
+trap cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
 "$script_dir/server.sh" doctor "$run_id"
 python3 "$script_dir/verify.py" \
   --url "http://127.0.0.1:$port" \
