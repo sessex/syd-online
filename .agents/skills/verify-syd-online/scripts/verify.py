@@ -6,6 +6,7 @@ import json
 import shutil
 import sys
 from pathlib import Path
+from typing import Optional, TypedDict
 from urllib.parse import urlparse
 
 from playwright.sync_api import Page, Route, expect, sync_playwright
@@ -13,7 +14,7 @@ from playwright.sync_api import Page, Route, expect, sync_playwright
 
 FEATURES = (
     "landing-page",
-    "motion-control",
+    "smooth-scroll",
     "photo-carousel",
     "portfolio-links",
     "contact-links",
@@ -37,8 +38,60 @@ def require_local_url(url: str) -> str:
 
 def wait_for_app(page: Page, url: str) -> None:
     page.goto(f"{url}/", wait_until="networkidle")
-    page.locator("[data-entrance='complete']").wait_for(state="attached", timeout=8_000)
     expect(page).to_have_title("Sydney Essex - Product Engineer")
+    expect(page.get_by_role("main")).to_be_visible()
+    page.evaluate("document.fonts.ready")
+    page.evaluate("""() => Promise.all(document.getAnimations()
+        .filter(animation => animation.effect.getTiming().iterations !== Infinity)
+        .map(animation => animation.finished.catch(() => {})))""")
+    carousel = page.get_by_role("region", name="Sydney’s photo carousel. Scroll to explore.")
+    carousel.focus()
+    carousel.press("ArrowRight")
+    page.wait_for_function("document.querySelector('[aria-roledescription=carousel]').scrollLeft > 0")
+    page.wait_for_timeout(500)
+    page.keyboard.press("Tab")
+    page.wait_for_function("document.querySelector('[aria-roledescription=carousel]').scrollLeft === 0")
+    page.evaluate("window.scrollTo(0, 0)")
+
+
+class Action(TypedDict):
+    action: str
+    observed: dict[str, object]
+
+
+class Report(TypedDict):
+    app: str
+    url: str
+    status: str
+    requested_features: list[str]
+    features: dict[str, dict[str, object]]
+    actions: list[Action]
+    page_errors: list[str]
+    console_errors: list[str]
+    failure: Optional[str]
+
+
+def observe_wheel(page: Page) -> None:
+    page.evaluate("""() => {
+        window.sydWheelObservation = new Promise(resolve => {
+            window.addEventListener('wheel', event => {
+                const started = performance.now();
+                const observation = {
+                    trusted: event.isTrusted,
+                    prevented: event.defaultPrevented,
+                    deltaX: event.deltaX,
+                    deltaY: event.deltaY,
+                    samples: [{elapsed: 0, y: window.scrollY}],
+                };
+                const sample = time => {
+                    observation.samples.push({elapsed: time - started, y: window.scrollY});
+                    if (time - started < 1200) requestAnimationFrame(sample);
+                    else resolve(observation);
+                };
+                requestAnimationFrame(sample);
+            }, {once: true, passive: true});
+        });
+    }""")
 
 
 def main() -> int:
@@ -52,10 +105,11 @@ def main() -> int:
     video_staging = evidence_dir / ".video"
     video_staging.mkdir()
 
-    report: dict[str, object] = {
+    report: Report = {
         "app": "Syd Online",
         "url": url,
         "status": "running",
+        "failure": None,
         "requested_features": list(selected),
         "features": {},
         "actions": [],
@@ -64,7 +118,7 @@ def main() -> int:
     }
 
     def action(name: str, **observed: object) -> None:
-        report["actions"].append({"action": name, "observed": observed})  # type: ignore[union-attr]
+        report["actions"].append({"action": name, "observed": observed})
 
     playwright = sync_playwright().start()
     browser = playwright.chromium.launch(headless=True)
@@ -76,7 +130,7 @@ def main() -> int:
     )
     page = context.new_page()
     video = page.video
-    page.on("pageerror", lambda error: report["page_errors"].append(str(error)))  # type: ignore[union-attr]
+    page.on("pageerror", lambda error: report["page_errors"].append(str(error)))
     page.on(
         "console",
         lambda message: report["console_errors"].append(message.text)
@@ -97,27 +151,88 @@ def main() -> int:
             expect(page.get_by_role("heading", name="projects", level=2)).to_be_attached()
             expect(page.get_by_role("heading", name="experience", level=2)).to_be_attached()
             page.screenshot(path=evidence_dir / "01_landing_page.png", full_page=True)
-            report["features"]["landing-page"] = {"status": "passed", "title": page.title()}  # type: ignore[index]
+            report["features"]["landing-page"] = {"status": "passed", "title": page.title()}
             action("inspect landing page", hero=True, about=True, projects=True, experience=True)
 
-        if "motion-control" in selected:
+        if "smooth-scroll" in selected:
             page.evaluate("window.scrollTo(0, 0)")
-            control = page.get_by_role("button", name="Pause motion")
-            expect(control).to_have_attribute("aria-pressed", "false")
-            page.screenshot(path=evidence_dir / "02_motion_before.png")
-            control.click()
-            play_control = page.get_by_role("button", name="Play motion")
-            expect(play_control).to_have_attribute("aria-pressed", "true")
-            expect(page.locator("[data-hero-frame]")).to_have_attribute("data-motion-paused", "true")
-            expect(page.get_by_role("region", name="Sydney’s photo carousel. Scroll to explore.")).to_have_attribute(
-                "data-motion-paused", "true"
-            )
-            page.screenshot(path=evidence_dir / "03_motion_paused.png")
-            action("click Pause motion", aria_pressed=True, hero_paused=True, carousel_paused=True)
-            play_control.click()
-            expect(page.get_by_role("button", name="Pause motion")).to_have_attribute("aria-pressed", "false")
-            report["features"]["motion-control"] = {"status": "passed", "restored_to_playing": True}  # type: ignore[index]
-            action("click Play motion", aria_pressed=False)
+            page.mouse.move(10, 500)
+            page.screenshot(path=evidence_dir / "02_scroll_before.png")
+            observe_wheel(page)
+            page.mouse.wheel(0, 600)
+            smooth = page.evaluate("window.sydWheelObservation")
+            positions = [sample["y"] for sample in smooth["samples"]]
+            if not smooth["trusted"] or not smooth["prevented"]:
+                raise AssertionError(f"smooth wheel was not intercepted: {smooth}")
+            if not any(0 < position < 590 for position in positions) or abs(positions[-1] - 600) > 1:
+                raise AssertionError(f"wheel did not interpolate and settle at 600px: {positions}")
+            if max(positions[-5:]) - min(positions[-5:]) > 1:
+                raise AssertionError(f"wheel did not settle: {positions[-5:]}")
+            action("scroll with vertical wheel", **smooth)
+
+            interruptions: dict[str, dict[str, float]] = {}
+            for input_name in ("pointer", "keyboard"):
+                start = page.evaluate("window.scrollY")
+                observe_wheel(page)
+                page.mouse.wheel(0, 600)
+                page.wait_for_function("start => window.scrollY > start + 20", arg=start)
+                if input_name == "pointer":
+                    page.mouse.down()
+                    page.mouse.up()
+                else:
+                    page.keyboard.press("Escape")
+                stopped_at = page.evaluate("window.scrollY")
+                interrupted = page.evaluate("window.sydWheelObservation")
+                final_position = interrupted["samples"][-1]["y"]
+                if stopped_at >= start + 590 or abs(final_position - stopped_at) > 1:
+                    raise AssertionError(f"{input_name} failed to stop wheel motion: {stopped_at}, {final_position}")
+                interruptions[input_name] = {"stopped_at": stopped_at, "final_position": final_position}
+                action(f"interrupt wheel motion with {input_name}", **interruptions[input_name])
+
+            start = page.evaluate("window.scrollY")
+            observe_wheel(page)
+            page.mouse.wheel(0, 600)
+            page.wait_for_function("start => window.scrollY > start + 20", arg=start)
+            page.evaluate("window.scrollTo(0, 0)")
+            external_scroll = page.evaluate("window.sydWheelObservation")
+            if abs(external_scroll["samples"][-1]["y"]) > 1:
+                raise AssertionError("wheel motion overwrote an external scroll position")
+            action("set external scroll position during wheel motion", target=0, **external_scroll)
+
+            page.emulate_media(reduced_motion="reduce")
+            page.evaluate("() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))")
+            start = page.evaluate("window.scrollY")
+            observe_wheel(page)
+            page.mouse.wheel(0, 400)
+            native = page.evaluate("window.sydWheelObservation")
+            if not native["trusted"] or native["prevented"] or native["samples"][-1]["y"] <= start:
+                raise AssertionError(f"reduced motion did not preserve native wheel scrolling: {native}")
+            action("scroll with reduced motion", **native)
+            page.screenshot(path=evidence_dir / "03_scroll_after.png")
+            page.emulate_media(reduced_motion="no-preference")
+            carousel = page.get_by_role("region", name="Sydney’s photo carousel. Scroll to explore.")
+            carousel.focus()
+            carousel.hover()
+            horizontal_before = carousel.evaluate("element => element.scrollLeft")
+            vertical_before = page.evaluate("window.scrollY")
+            observe_wheel(page)
+            page.mouse.wheel(320, 0)
+            horizontal = page.evaluate("window.sydWheelObservation")
+            horizontal_after = carousel.evaluate("element => element.scrollLeft")
+            if horizontal["prevented"] or horizontal_after <= horizontal_before:
+                raise AssertionError(f"horizontal wheel did not scroll the carousel: {horizontal_before}, {horizontal_after}")
+            if abs(page.evaluate("window.scrollY") - vertical_before) > 1:
+                raise AssertionError("horizontal carousel wheel changed the page's vertical position")
+            action("scroll carousel with horizontal wheel", before=horizontal_before, after=horizontal_after, **horizontal)
+            report["features"]["smooth-scroll"] = {
+                "status": "passed",
+                "wheel": smooth,
+                "interruptions": interruptions,
+                "reduced_motion": native,
+                "external_scroll": external_scroll,
+                "horizontal_carousel": {"before": horizontal_before, "after": horizontal_after},
+                "nested_vertical_scroller": "not present on this page",
+            }
 
         if "photo-carousel" in selected:
             page.evaluate("window.scrollTo(0, 0)")
@@ -131,7 +246,7 @@ def main() -> int:
                 raise AssertionError(f"carousel did not move right: before={before}, after={after}")
             carousel.screenshot(path=evidence_dir / "04_carousel_keyboard.png")
             distance = round(after - before, 2)
-            report["features"]["photo-carousel"] = {  # type: ignore[index]
+            report["features"]["photo-carousel"] = {
                 "status": "passed",
                 "scroll_left_before": before,
                 "scroll_left_after": after,
@@ -183,7 +298,7 @@ def main() -> int:
                 probe.close()
             if requested_url != "https://trouv.vercel.app/":
                 raise AssertionError(f"unexpected outbound request: {requested_url}")
-            report["features"]["portfolio-links"] = {  # type: ignore[index]
+            report["features"]["portfolio-links"] = {
                 "status": "passed",
                 "destinations": checked,
                 "representative_click_request": requested_url,
@@ -206,7 +321,7 @@ def main() -> int:
             footer = page.locator("footer")
             footer.scroll_into_view_if_needed()
             footer.screenshot(path=evidence_dir / "06_contact_links.png")
-            report["features"]["contact-links"] = {"status": "passed", "destinations": checked_contacts}  # type: ignore[index]
+            report["features"]["contact-links"] = {"status": "passed", "destinations": checked_contacts}
             action("inspect contact destinations", **checked_contacts)
 
         if report["page_errors"]:

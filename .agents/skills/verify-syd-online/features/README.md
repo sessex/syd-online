@@ -5,8 +5,8 @@ This directory is the maintained source for verifying the user-facing behavior o
 ## Baseline preconditions
 
 - Build and launch the real production app with `scripts/server.sh start <run-id> <port>`.
-- Use a unique run ID and port; runtime state belongs only to `/tmp/syd-online-verify-<run-id>/`.
-- Run only one verifier at a time. The launcher owns `/tmp/syd-online-verify.lock` because concurrent production builds would share `.next`.
+- Use a unique run ID and port; runtime state belongs only to `/tmp/syd-online-verify-<checkout-hash>-<run-id>/`.
+- Run only one verifier per checkout. The launcher keys its lock to the physical checkout path because each checkout has its own `.next` output.
 - Require `scripts/server.sh doctor <run-id>` to print `HEALTHY` for the same URL and PID.
 - Use a fresh Playwright browser context at a 1440×1000 viewport with motion enabled.
 - Never drive an instance the verification run did not start.
@@ -14,12 +14,12 @@ This directory is the maintained source for verifying the user-facing behavior o
 
 ## Driving conventions
 
-- Start every recipe from `/` after `networkidle` and `[data-entrance="complete"]`.
+- Start every recipe from `/` after network idle, finite animations, and the carousel keyboard/blur hydration check.
 - Prefer ARIA roles and accessible names; use data attributes only for visual state with no semantic equivalent.
 - Send real clicks, focus, keyboard presses, and scroll actions through `scripts/verify.py`.
 - Entries configured with `#` render status copy without anchors; verify that they cannot navigate.
 - Intercept representative external navigation only after the browser emits the requested URL; do not depend on third-party uptime.
-- Restore the motion control to playing after a pause-state check.
+- Restore the motion preference to `no-preference` after reduced-motion checks.
 
 ## Proof and skip reporting
 
@@ -38,7 +38,7 @@ Each feature file describes what the user can do, every visible entry point, the
 ## Features
 
 - [Landing page](./landing-page.md) covers the complete rendered portfolio structure and identity.
-- [Motion control](./motion-control.md) covers pause/play input and synchronized visual state.
+- [Smooth scrolling](./smooth-scroll.md) covers wheel easing, interruption, reduced motion, and horizontal input.
 - [Photo carousel](./photo-carousel.md) covers keyboard focus and manual horizontal scrolling.
 - [Portfolio links](./portfolio-links.md) covers project and experience destinations plus a representative outbound handoff.
 - [Contact links](./contact-links.md) covers X, LinkedIn, GitHub, and email destinations.

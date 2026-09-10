@@ -1,6 +1,6 @@
 ---
 name: verify-syd-online
-description: "Launch and verify the Syd Online Next.js portfolio through its real browser UI. Use after changing the landing page, hero motion, photo carousel, portfolio links, contact links, styling, assets, or responsive behavior."
+description: "Launch and verify the Syd Online Next.js portfolio through its real browser UI. Use after changing the landing page, smooth scrolling, photo carousel, portfolio links, contact links, styling, assets, or responsive behavior."
 ---
 
 # Verify Syd Online
@@ -17,7 +17,7 @@ SYD_VERIFY_PORT=4173
 .agents/skills/verify-syd-online/scripts/server.sh start "$SYD_VERIFY_RUN_ID" "$SYD_VERIFY_PORT"
 ```
 
-`start` performs a production build, launches that build on `127.0.0.1`, and waits until the page serves the expected Sydney Essex title. Runtime state is isolated at `/tmp/syd-online-verify-<run-id>/`. The helper deliberately refuses a second concurrent verification run because production builds share the repository's `.next` output; clean up the active owner before starting another run.
+`start` performs a production build, launches that build on `127.0.0.1`, and waits until the page serves the expected Sydney Essex title. Runtime state is isolated at `/tmp/syd-online-verify-<checkout-hash>-<run-id>/`. The helper keys its ownership lock to the checkout's physical path. It refuses concurrent builds in the same checkout because they share `.next`. Separate worktrees can run independently with unique run IDs and ports.
 
 The ready signal is:
 
@@ -25,7 +25,7 @@ The ready signal is:
 READY http://127.0.0.1:<port> pid=<pid>
 ```
 
-If the build or readiness check fails, run cleanup before trying again. Do not fall back to an existing server on the same port.
+If the build or readiness check fails, the launcher removes its own server, runtime state, and lock. It prints the last log lines before cleanup. Do not fall back to an existing server on the same port.
 
 ## Doctor
 
@@ -50,9 +50,9 @@ python3 .agents/skills/verify-syd-online/scripts/verify.py \
   --evidence-dir "$SYD_VERIFY_EVIDENCE"
 ```
 
-Run one mapped feature with `--feature landing-page`, `--feature motion-control`, `--feature photo-carousel`, `--feature portfolio-links`, or `--feature contact-links`. Repeat `--feature` to combine selected features. The default is all features.
+Run one mapped feature with `--feature landing-page`, `--feature smooth-scroll`, `--feature photo-carousel`, `--feature portfolio-links`, or `--feature contact-links`. Repeat `--feature` to combine selected features. The default is all features.
 
-The verifier waits for JavaScript and the entrance sequence, proves the page identity and content, toggles motion and observes synchronized pressed/paused state, focuses the carousel and scrolls it by keyboard, verifies every portfolio/contact destination, and safely proves one representative external-link handoff by aborting only after the browser emits the expected outbound request.
+The verifier waits for finite page animations and proves hydration through the carousel's keyboard and blur behavior. It checks wheel easing, cancellation, reduced motion, horizontal carousel scrolling, page content, and link destinations. It aborts one representative external navigation after the browser emits the expected request.
 
 For the editorial rows, also run `scripts/editorial.py` with the same `--url` and a new `--evidence-dir`. It checks the full hit targets, keyboard order, interrupted motion, chroma wave, reduced motion, touch, and six viewport widths. The `prove.sh` helper runs both verifiers.
 
@@ -63,12 +63,12 @@ Keep proof under `.verification/evidence/<run-id>/`. A successful full run conta
 - `report.json`: pass/fail status, exact actions, observed state, checked destinations, page errors, and console errors.
 - `accessibility.aria.yml`: the rendered accessibility tree after JavaScript settles.
 - `01_landing_page.png`: the loaded real page.
-- `02_motion_before.png` and `03_motion_paused.png`: the action boundary and resulting pressed/paused state.
+- `02_scroll_before.png` and `03_scroll_after.png`: the page before wheel input and after the scroll checks.
 - `04_carousel_keyboard.png`: the focused carousel after a real `ArrowRight` key press.
 - `05_portfolio_links.png` and `06_contact_links.png`: the two destination groups as rendered.
 - `browser_walkthrough.webm`: the complete browser drive for the selected features.
 
-Proof is valid only when `report.json` says `passed`, the actions were performed against the launched URL, every requested feature has a passing entry, and the screenshots/video exist. The UI controls—not React state setters or test-only routes—must produce the result. This app has no persistent writes; link side effects are outbound browser handoffs, so the verifier records their destinations and intercepts the representative network handoff at the production boundary instead of depending on third-party uptime. Do not claim an external site itself was verified.
+Proof is valid only when `report.json` says `passed`, the actions were performed against the launched URL, every requested feature has a passing entry, and the screenshots/video exist. Use real browser input for user actions. The external-scroll regression sets a document scroll position during real wheel motion to check integration with other scroll callers. Do not use React state setters or test-only app hooks. This app has no persistent writes; link side effects are outbound browser handoffs, so the verifier records their destinations and intercepts the representative network handoff at the production boundary instead of depending on third-party uptime. Do not claim an external site itself was verified.
 
 ## Cleanup
 
@@ -78,7 +78,7 @@ Stop only the exact PID recorded for this run:
 .agents/skills/verify-syd-online/scripts/server.sh stop "$SYD_VERIFY_RUN_ID"
 ```
 
-Cleanup terminates the recorded server and removes only `/tmp/syd-online-verify-<run-id>/`. It never removes `.verification/evidence/`. After cleanup, confirm proof survived:
+Cleanup terminates the recorded server and removes only `/tmp/syd-online-verify-<checkout-hash>-<run-id>/`. It never removes `.verification/evidence/`. After cleanup, confirm proof survived:
 
 ```bash
 test -s "$SYD_VERIFY_EVIDENCE/report.json"
