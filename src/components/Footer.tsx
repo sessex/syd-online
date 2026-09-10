@@ -23,13 +23,15 @@ export default function Footer() {
             <Link
               href={link.href}
               className="flex min-h-11 min-w-11 basis-0 items-center justify-center transition-opacity hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black"
-              style={{ flexGrow: link.name === 'x' ? 1.3 : link.image.width / link.image.height }}
+              style={link.name === 'x'
+                ? { flex: '0 0 clamp(44px, 6vw, 64px)' }
+                : { flexGrow: link.image.width / link.image.height }}
             >
               <Image
                 {...link.image}
                 alt={link.name}
                 sizes="(max-width: 1090px) 23vw, 250px"
-                className={link.name === 'x' ? 'h-auto w-[min(100%,10vw)]' : 'h-auto w-full'}
+                className={link.name === 'x' ? 'h-auto w-[clamp(24px,5vw,64px)] max-w-full' : 'h-auto w-full'}
               />
             </Link>
           </Fragment>

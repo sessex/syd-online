@@ -38,6 +38,45 @@ with sync_playwright() as playwright:
             )
             footer.screenshot(path=str(args.evidence_dir / f'footer-{width}.png'))
             page.screenshot(path=str(args.evidence_dir / f'page-{width}.png'), full_page=True)
+            transparency = footer.locator('img').evaluate_all('''images => images.map(image => {
+                const canvas = document.createElement('canvas');
+                canvas.width = image.naturalWidth;
+                canvas.height = image.naturalHeight;
+                const context = canvas.getContext('2d');
+                context.drawImage(image, 0, 0);
+                const { data } = context.getImageData(0, 0, canvas.width, canvas.height);
+                let transparentPixels = 0;
+                for (let index = 3; index < data.length; index += 4) {
+                    if (data[index] === 0) transparentPixels++;
+                }
+                const cornerPixels = [
+                    0,
+                    canvas.width - 1,
+                    (canvas.height - 1) * canvas.width,
+                    canvas.width * canvas.height - 1,
+                ];
+                return {
+                    name: image.alt || 'star',
+                    src: image.currentSrc,
+                    width: canvas.width,
+                    height: canvas.height,
+                    transparent_fraction: transparentPixels / (canvas.width * canvas.height),
+                    corner_alpha: cornerPixels.map(pixel => data[pixel * 4 + 3]),
+                };
+            })''')
+            viewport_report = {
+                'width': width,
+                'status': 'failed',
+                'links': destinations,
+                'stars': 3,
+                'transparency': transparency,
+            }
+            report['viewports'].append(viewport_report)
+            assert len(transparency) == 7, 'Expected seven footer images to inspect'
+            for image in transparency:
+                name = image['name']
+                assert image['transparent_fraction'] > 0.2, f'{name} needs more than 20% transparent pixels'
+                assert image['corner_alpha'] == [0, 0, 0, 0], f'{name} corners must be fully transparent'
             assert footer.get_by_role('link').count() == 4, 'Expected four footer links'
             observed = []
             for name, href in destinations.items():
@@ -84,7 +123,7 @@ with sync_playwright() as playwright:
                 assert link.evaluate('el => getComputedStyle(el).outlineStyle !== "none"'), f'{name} lacks focus outline'
             page.keyboard.press('Tab')
             assert not footer.evaluate('el => el.contains(document.activeElement)'), 'Extra footer tab stop'
-            report['viewports'].append({'width': width, 'status': 'passed', 'links': destinations, 'stars': 3})
+            viewport_report['status'] = 'passed'
         requests = []
         for name, href in list(destinations.items())[:3]:
             page.goto(args.url, wait_until='networkidle')

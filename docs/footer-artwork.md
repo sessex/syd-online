@@ -2,19 +2,29 @@
 
 The footer has four linked word images and three decorative stars. Each record in `siteContent.footer.links` owns its destination, image path, and native dimensions. The renderer inserts the shared star between adjacent links.
 
-The word images use the silver rhinestone material and lowercase calligraphic serif lettering from `public/brand/subtitle-sparkle.png`. `public/brand/name-sparkle.png` supplied the second material reference. The assets were generated with the built-in imagegen tool. All five PNGs have real transparency.
+The artwork derives from the silver gem footer strip selected by the user. That strip used `public/brand/subtitle-sparkle.png` as its lettering and material reference. The separate assets and background removal passes use the built-in imagegen tool.
 
 ## Artwork prompts
 
-Generate each word separately with this prompt, substituting `x`, `linkedin`, `github`, or `email`.
+Use the approved strip as the input. Extract each word separately, substituting `x`, `linkedin`, `github`, or `email`.
 
-> Create a production website footer asset containing only the exact lowercase word on a genuinely transparent background. Match the reference's lowercase calligraphic serif typeface, softly irregular curved letter shapes, silver-gray strokes, small round clear diamond rhinestones, white starburst glints, and subtle icy blue reflections. Keep one readable word on one line. No colored jewels, gold, extra symbols, backdrop, or painted checkerboard. Preserve the complete lettering and sparkles.
+> Extract only this word as a separate image. Preserve the selected lettering, proportions, gem placement, silver color, and sparkle rays. Remove the other words and stars. Do not change the font or add details.
 
-Use this prompt for the shared separator.
+Extract the first star from the same strip for the shared separator.
 
-> Create one five-pointed silver faceted star gemstone. Match the reference lettering's silvery white rhinestone material and glints. Use dimensional triangular crystal facets, a thin silver setting, white highlights, and subtle cool blue reflections. Front view, top point upward. No lettering, extra stars, colored jewels, backdrop, or painted checkerboard. Output genuine transparency.
+The short background-removal prompt was more reliable than the detailed extraction prompt.
 
-Background extraction passes removed opaque backgrounds from the email and star outputs. A new X generation used the subtitle alone as its reference to obtain transparent silver lettering without the first attempt's checkerboard. Keep the original alpha channels when replacing or exporting these assets.
+> Remove background, keep everything else the same.
+
+GitHub and the star needed a second pass.
+
+> Remove the background. Make it transparent. Keep everything else the same.
+
+X needed an intermediate flat green background because repeated direct removals kept returning opaque checkerboards. A final pass with the short removal prompt produced real transparency.
+
+The final files use `footer-<word>-v2.png` and `footer-star-v2.png` so image optimization caches cannot serve the previous artwork.
+
+Check the actual alpha channel after every pass. A displayed checkerboard can be painted into an opaque image. Keep the final PNG alpha channels when replacing or exporting these assets.
 
 ## Verify the footer
 
@@ -34,9 +44,11 @@ python3 -m playwright install chromium
 python3 scripts/verify-footer.py --url http://127.0.0.1:42871 --evidence-dir /tmp/syd-footer-evidence
 ```
 
-The check covers four distinct loaded word images, unchanged destinations, three stars outside every link rectangle, pointer hit targets, 44 pixel minimum targets, keyboard focus, and outbound browser requests. It captures the actual page at 320, 390, 768, and 1440 pixels. It intercepts external requests and does not open the email application. It verifies this site's handoff, not third-party page content.
+The check covers four distinct loaded word images, unchanged destinations, three stars outside every link rectangle, pointer hit targets, 44 pixel minimum targets, keyboard focus, and outbound browser requests. It also reads the decoded pixels of all seven rendered images and requires fully transparent corners and more than 20% fully transparent pixels. Each viewport report records those measurements.
 
-The baseline fails with `FAIL: x must contain one word image`. The corrected footer passes the same check.
+It captures the actual page at 320, 390, 768, and 1440 pixels. It intercepts external requests and does not open the email application. It verifies this site's handoff, not third-party page content.
+
+The initial reproduction failed with `FAIL: x must contain one word image`.
 
 ## Browser evidence
 
