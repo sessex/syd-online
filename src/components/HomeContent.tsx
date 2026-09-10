@@ -7,10 +7,12 @@ import Footer from './Footer';
 export default function HomeContent() {
   return (
     <div className="min-h-screen bg-white">
-      <Hero />
-      <About />
-      <Projects />
-      <Experience />
+      <main>
+        <Hero />
+        <About />
+        <Projects />
+        <Experience />
+      </main>
       <Footer />
     </div>
   );
