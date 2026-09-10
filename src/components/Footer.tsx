@@ -1,34 +1,40 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { Fragment } from 'react';
 import { siteContent } from '@/content/site';
 
 export default function Footer() {
-  const { stripImage, links } = siteContent.footer;
+  const { links, separator } = siteContent.footer;
 
   return (
     <footer className="w-full py-16 md:py-24">
-      <div className="flex justify-center">
-        <div className="relative aspect-[1600/164] w-[min(88vw,960px)]">
-          <Image
-            src={stripImage}
-            alt="Contact links"
-            fill
-            sizes="(max-width: 768px) 88vw, 960px"
-            unoptimized
-            className="pointer-events-none z-0 object-contain"
-          />
-          <div className="absolute inset-0 z-10 flex">
-            {links.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                className="flex-1 hover:opacity-70 transition-opacity"
-                aria-label={link.name}
+      <nav aria-label="Contact" className="mx-auto flex w-[min(88vw,960px)] items-center gap-[clamp(4px,1vw,12px)]">
+        {links.map((link, index) => (
+          <Fragment key={link.name}>
+            {index > 0 && (
+              <Image
+                {...separator}
+                alt=""
+                aria-hidden="true"
+                sizes="32px"
+                className="pointer-events-none h-auto w-[clamp(12px,3vw,32px)] flex-none"
               />
-            ))}
-          </div>
-        </div>
-      </div>
+            )}
+            <Link
+              href={link.href}
+              className="flex min-h-11 min-w-11 basis-0 items-center justify-center transition-opacity hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black"
+              style={{ flexGrow: link.name === 'x' ? 1.3 : link.image.width / link.image.height }}
+            >
+              <Image
+                {...link.image}
+                alt={link.name}
+                sizes="(max-width: 1090px) 23vw, 250px"
+                className={link.name === 'x' ? 'h-auto w-[min(100%,10vw)]' : 'h-auto w-full'}
+              />
+            </Link>
+          </Fragment>
+        ))}
+      </nav>
     </footer>
   );
 }
