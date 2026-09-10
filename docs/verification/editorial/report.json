@@ -1,0 +1,643 @@
+{
+  "date": "2026-09-10",
+  "build": "s7mGcHoAWXaOWDUEFPREE",
+  "production_build": "passed",
+  "eslint": "passed",
+  "engine": "Playwright Chromium",
+  "baseline_status": "passed",
+  "baseline_features": {
+    "landing-page": {
+      "status": "passed",
+      "title": "Sydney Essex - Product Engineer"
+    },
+    "motion-control": {
+      "status": "passed",
+      "restored_to_playing": true
+    },
+    "photo-carousel": {
+      "status": "passed",
+      "scroll_left_before": 0,
+      "scroll_left_after": 40,
+      "distance": 40
+    },
+    "portfolio-links": {
+      "status": "passed",
+      "destinations": {
+        "trouvaille": "https://trouv.vercel.app/",
+        "iris": "#",
+        "asimov collective": "https://www.asimovcollective.com/",
+        "goldman sachs": "#",
+        "hypno": "https://app.hypno.com/",
+        "vbn": "#",
+        "artswrk": "https://artswrk.com/"
+      },
+      "representative_click_request": "https://trouv.vercel.app/",
+      "external_response_verified": false
+    },
+    "contact-links": {
+      "status": "passed",
+      "destinations": {
+        "x": "https://x.com/waifu101",
+        "linkedin": "https://www.linkedin.com/in/sydneyessex/",
+        "github": "https://github.com/sessex",
+        "email": "mailto:sydneyressex@gmail.com"
+      }
+    }
+  },
+  "editorial_status": "passed",
+  "editorial_checks": [
+    {
+      "name": "whole-row targets and disclosure",
+      "item": "trouvaille"
+    },
+    {
+      "name": "whole-row targets and disclosure",
+      "item": "iris"
+    },
+    {
+      "name": "whole-row targets and disclosure",
+      "item": "asimov collective"
+    },
+    {
+      "name": "whole-row targets and disclosure",
+      "item": "goldman sachs"
+    },
+    {
+      "name": "whole-row targets and disclosure",
+      "item": "hypno"
+    },
+    {
+      "name": "whole-row targets and disclosure",
+      "item": "vbn"
+    },
+    {
+      "name": "whole-row targets and disclosure",
+      "item": "artswrk"
+    },
+    {
+      "name": "Enter, Space, and Tab; closing link immediately inert"
+    },
+    {
+      "name": "interrupted transition returns smoothly to closed",
+      "frames": [
+        {
+          "t": 5.799999976159597,
+          "height": 0
+        },
+        {
+          "t": 14.799999976159597,
+          "height": 0
+        },
+        {
+          "t": 22.999999976156687,
+          "height": 0
+        },
+        {
+          "t": 31.399999976158142,
+          "height": 17.75
+        },
+        {
+          "t": 39.7999999761596,
+          "height": 34.53125
+        },
+        {
+          "t": 48.09999997615887,
+          "height": 49.90625
+        },
+        {
+          "t": 56.49999997615669,
+          "height": 64.09375
+        },
+        {
+          "t": 64.7999999761596,
+          "height": 76.71875
+        },
+        {
+          "t": 72.69999997615741,
+          "height": 87.421875
+        },
+        {
+          "t": 81.49999997615669,
+          "height": 97.90625
+        },
+        {
+          "t": 89.59999997615887,
+          "height": 106.28125
+        },
+        {
+          "t": 97.89999997615814,
+          "height": 113.703125
+        },
+        {
+          "t": 105.49999997615669,
+          "height": 119.578125
+        },
+        {
+          "t": 114.39999997615814,
+          "height": 125.453125
+        },
+        {
+          "t": 122.59999997615887,
+          "height": 130.046875
+        },
+        {
+          "t": 130.7999999761596,
+          "height": 130.046875
+        },
+        {
+          "t": 138.4999999761567,
+          "height": 111.4375
+        },
+        {
+          "t": 146.89999997615814,
+          "height": 92.84375
+        },
+        {
+          "t": 155.7999999761596,
+          "height": 75.375
+        },
+        {
+          "t": 164.09999997615887,
+          "height": 61.3125
+        },
+        {
+          "t": 172.39999997615814,
+          "height": 49.390625
+        },
+        {
+          "t": 180.69999997615741,
+          "height": 39.484375
+        },
+        {
+          "t": 189.09999997615887,
+          "height": 31.28125
+        },
+        {
+          "t": 197.39999997615814,
+          "height": 24.71875
+        },
+        {
+          "t": 205.69999997615741,
+          "height": 19.4375
+        },
+        {
+          "t": 214.09999997615887,
+          "height": 15.171875
+        },
+        {
+          "t": 222.39999997615814,
+          "height": 11.796875
+        },
+        {
+          "t": 230.69999997615741,
+          "height": 9.125
+        },
+        {
+          "t": 239.09999997615887,
+          "height": 6.96875
+        },
+        {
+          "t": 246.4999999761567,
+          "height": 5.46875
+        },
+        {
+          "t": 255.69999997615741,
+          "height": 3.984375
+        },
+        {
+          "t": 263.9999999761567,
+          "height": 2.953125
+        },
+        {
+          "t": 272.39999997615814,
+          "height": 2.140625
+        },
+        {
+          "t": 280.6999999761574,
+          "height": 1.53125
+        },
+        {
+          "t": 288.9999999761567,
+          "height": 1.0625
+        },
+        {
+          "t": 297.39999997615814,
+          "height": 0.703125
+        },
+        {
+          "t": 304.9999999761567,
+          "height": 0.46875
+        },
+        {
+          "t": 314.09999997615887,
+          "height": 0.28125
+        },
+        {
+          "t": 321.7999999761596,
+          "height": 0.15625
+        },
+        {
+          "t": 330.59999997615887,
+          "height": 0.078125
+        },
+        {
+          "t": 339.09999997615887,
+          "height": 0.03125
+        },
+        {
+          "t": 347.4999999761567,
+          "height": 0
+        },
+        {
+          "t": 354.9999999761567,
+          "height": 0
+        },
+        {
+          "t": 364.1999999761574,
+          "height": 0
+        },
+        {
+          "t": 372.2999999761596,
+          "height": 0
+        },
+        {
+          "t": 380.7999999761596,
+          "height": 0
+        },
+        {
+          "t": 389.1999999761574,
+          "height": 0
+        },
+        {
+          "t": 397.4999999761567,
+          "height": 0
+        },
+        {
+          "t": 405.7999999761596,
+          "height": 0
+        },
+        {
+          "t": 414.1999999761574,
+          "height": 0
+        },
+        {
+          "t": 422.59999997615887,
+          "height": 0
+        },
+        {
+          "t": 430.89999997615814,
+          "height": 0
+        },
+        {
+          "t": 438.59999997615887,
+          "height": 0
+        },
+        {
+          "t": 446.89999997615814,
+          "height": 0
+        },
+        {
+          "t": 455.9999999761567,
+          "height": 0
+        },
+        {
+          "t": 464.1999999761574,
+          "height": 0
+        },
+        {
+          "t": 472.1999999761574,
+          "height": 0
+        },
+        {
+          "t": 480.2999999761596,
+          "height": 0
+        },
+        {
+          "t": 489.39999997615814,
+          "height": 0
+        },
+        {
+          "t": 497.59999997615887,
+          "height": 0
+        },
+        {
+          "t": 505.9999999761567,
+          "height": 0
+        },
+        {
+          "t": 514.2999999761596,
+          "height": 0
+        },
+        {
+          "t": 522.6999999761574,
+          "height": 0
+        },
+        {
+          "t": 530.5999999761589,
+          "height": 0
+        },
+        {
+          "t": 538.8999999761581,
+          "height": 0
+        },
+        {
+          "t": 547.6999999761574,
+          "height": 0
+        },
+        {
+          "t": 555.1999999761574,
+          "height": 0
+        },
+        {
+          "t": 563.8999999761581,
+          "height": 0
+        },
+        {
+          "t": 572.0999999761589,
+          "height": 0
+        },
+        {
+          "t": 580.2999999761596,
+          "height": 0
+        },
+        {
+          "t": 588.6999999761574,
+          "height": 0
+        },
+        {
+          "t": 597.2999999761596,
+          "height": 0
+        },
+        {
+          "t": 605.9999999761567,
+          "height": 0
+        },
+        {
+          "t": 614.1999999761574,
+          "height": 0
+        },
+        {
+          "t": 622.6999999761574,
+          "height": 0
+        },
+        {
+          "t": 630.9999999761567,
+          "height": 0
+        },
+        {
+          "t": 639.2999999761596,
+          "height": 0
+        },
+        {
+          "t": 647.6999999761574,
+          "height": 0
+        },
+        {
+          "t": 655.9999999761567,
+          "height": 0
+        },
+        {
+          "t": 664.3999999761581,
+          "height": 0
+        },
+        {
+          "t": 672.6999999761574,
+          "height": 0
+        },
+        {
+          "t": 680.9999999761567,
+          "height": 0
+        },
+        {
+          "t": 689.3999999761581,
+          "height": 0
+        },
+        {
+          "t": 696.8999999761581,
+          "height": 0
+        },
+        {
+          "t": 706.1999999761574,
+          "height": 0
+        },
+        {
+          "t": 713.4999999761567,
+          "height": 0
+        },
+        {
+          "t": 722.7999999761596,
+          "height": 0
+        },
+        {
+          "t": 730.7999999761596,
+          "height": 0
+        },
+        {
+          "t": 739.4999999761567,
+          "height": 0
+        },
+        {
+          "t": 747.7999999761596,
+          "height": 0
+        },
+        {
+          "t": 756.1999999761574,
+          "height": 0
+        },
+        {
+          "t": 764.4999999761567,
+          "height": 0
+        },
+        {
+          "t": 772.7999999761596,
+          "height": 0
+        },
+        {
+          "t": 781.1999999761574,
+          "height": 0
+        },
+        {
+          "t": 789.4999999761567,
+          "height": 0
+        },
+        {
+          "t": 797.8999999761581,
+          "height": 0
+        },
+        {
+          "t": 806.1999999761574,
+          "height": 0
+        },
+        {
+          "t": 814.4999999761567,
+          "height": 0
+        },
+        {
+          "t": 822.8999999761581,
+          "height": 0
+        },
+        {
+          "t": 831.2999999761596,
+          "height": 0
+        },
+        {
+          "t": 839.5999999761589,
+          "height": 0
+        },
+        {
+          "t": 847.8999999761581,
+          "height": 0
+        },
+        {
+          "t": 856.2999999761596,
+          "height": 0
+        },
+        {
+          "t": 864.5999999761589,
+          "height": 0
+        },
+        {
+          "t": 872.8999999761581,
+          "height": 0
+        },
+        {
+          "t": 881.3999999761581,
+          "height": 0
+        },
+        {
+          "t": 889.6999999761574,
+          "height": 0
+        },
+        {
+          "t": 897.9999999761567,
+          "height": 0
+        },
+        {
+          "t": 906.3999999761581,
+          "height": 0
+        }
+      ]
+    },
+    {
+      "name": "rapid repeated clicks settle at requested state"
+    },
+    {
+      "name": "pink-green stagger; stable dark title; one-shot wave",
+      "observed": {
+        "background": "rgba(0, 0, 0, 0)",
+        "color": "rgb(18, 18, 18)",
+        "layers": [
+          {
+            "pink": "rgb(245, 42, 155)",
+            "green": "rgb(55, 185, 139)",
+            "opacity": "0.683034",
+            "transform": "matrix(1, 0, 0, 1, -1.47857, 0.44357)",
+            "delay": "0s"
+          },
+          {
+            "pink": "rgb(245, 42, 155)",
+            "green": "rgb(55, 185, 139)",
+            "opacity": "0.487102",
+            "transform": "matrix(1, 0, 0, 1, -1.05443, 0.31633)",
+            "delay": "0.02s"
+          },
+          {
+            "pink": "rgb(245, 42, 155)",
+            "green": "rgb(55, 185, 139)",
+            "opacity": "0.271571",
+            "transform": "matrix(1, 0, 0, 1, -0.58787, 0.176361)",
+            "delay": "0.04s"
+          },
+          {
+            "pink": "rgb(245, 42, 155)",
+            "green": "rgb(55, 185, 139)",
+            "opacity": "0.102545",
+            "transform": "matrix(1, 0, 0, 1, -0.22198, 0.066594)",
+            "delay": "0.06s"
+          },
+          {
+            "pink": "rgb(245, 42, 155)",
+            "green": "rgb(55, 185, 139)",
+            "opacity": "0.0139703",
+            "transform": "matrix(1, 0, 0, 1, -0.0302416, 0.00907247)",
+            "delay": "0.08s"
+          },
+          {
+            "pink": "rgb(245, 42, 155)",
+            "green": "rgb(55, 185, 139)",
+            "opacity": "0",
+            "transform": "matrix(1, 0, 0, 1, 0, 0)",
+            "delay": "0.1s"
+          },
+          {
+            "pink": "rgb(245, 42, 155)",
+            "green": "rgb(55, 185, 139)",
+            "opacity": "0",
+            "transform": "matrix(1, 0, 0, 1, 0, 0)",
+            "delay": "0.12s"
+          },
+          {
+            "pink": "rgb(245, 42, 155)",
+            "green": "rgb(55, 185, 139)",
+            "opacity": "0",
+            "transform": "matrix(1, 0, 0, 1, 0, 0)",
+            "delay": "0.14s"
+          },
+          {
+            "pink": "rgb(245, 42, 155)",
+            "green": "rgb(55, 185, 139)",
+            "opacity": "0",
+            "transform": "matrix(1, 0, 0, 1, 0, 0)",
+            "delay": "0.16s"
+          },
+          {
+            "pink": "rgb(245, 42, 155)",
+            "green": "rgb(55, 185, 139)",
+            "opacity": "0",
+            "transform": "matrix(1, 0, 0, 1, 0, 0)",
+            "delay": "0.18s"
+          }
+        ]
+      }
+    },
+    {
+      "name": "all rows open without overflow or clipped text",
+      "width": 320
+    },
+    {
+      "name": "all rows open without overflow or clipped text",
+      "width": 390
+    },
+    {
+      "name": "all rows open without overflow or clipped text",
+      "width": 760
+    },
+    {
+      "name": "all rows open without overflow or clipped text",
+      "width": 768
+    },
+    {
+      "name": "all rows open without overflow or clipped text",
+      "width": 1024
+    },
+    {
+      "name": "all rows open without overflow or clipped text",
+      "width": 1440
+    },
+    {
+      "name": "reduced motion instant disclosures and no chroma wave"
+    },
+    {
+      "name": "forced colors preserves plain readable titles"
+    },
+    {
+      "name": "emulated phone touch opens and closes all seven rows"
+    }
+  ],
+  "page_errors": [],
+  "console_errors": [],
+  "limits": [
+    "Touch input was emulated; physical devices, Safari, and Firefox were not tested.",
+    "External URL handoff was checked; third-party site responses were not verified."
+  ]
+}

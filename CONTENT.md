@@ -48,7 +48,8 @@ Update hrefs in the config:
 ```typescript
 projects: {
   items: [
-    { name: 'project name', description: '...', href: 'https://...' },
+    { name: 'project name', blurb: 'one-line summary', description: '...',
+      dateLabel: '2026', dateDescription: '2026', href: 'https://...' },
   ],
 }
 ```
@@ -80,12 +81,15 @@ transparent layer above the terrain.
 
 ## Typography
 
-Body sections use:
-- **Font**: Helvetica Neue (system fallback stack)
-- **Size**: 36px
-- **Letter spacing**: -3% (-0.03em)
-- **Section titles**: Bold
-- **Body text**: Regular
+Body sections use self-hosted Raveo, with a 43px introductory lead and 46px
+item titles on desktop. On phones these become 34px and 30px. Dates and
+one-line blurbs stay visible; the full row opens the description and visit link.
+Use `href: '#'` for an unavailable destination. It renders a status instead of a
+link, with optional `linkStatus` copy such as Iris's "in development for iOS".
+
+The title hover adds a short pink/green chroma wave. Disclosure transitions take
+320ms to open and 280ms to close. Both honor reduced motion. The timings, colors,
+and responsive layout live in `src/components/PostHero.module.css`.
 
 ## Next Steps
 
