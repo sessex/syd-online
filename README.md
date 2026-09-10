@@ -38,11 +38,11 @@ public/
   brand/
     name.png          # "SYDNEY ESSEX" bead lettering
     subtitle.png      # "product engineer based in nyc"
-    footer-x-v2.png
-    footer-linkedin-v2.png
-    footer-github-v2.png
-    footer-email-v2.png
-    footer-star-v2.png
+    footer-x.png
+    footer-linkedin.png
+    footer-github.png
+    footer-email.png
+    footer-star.png
   carousel/
     placeholder.png   # Model cutout (currently repeated)
 ```

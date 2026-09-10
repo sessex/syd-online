@@ -81,27 +81,27 @@ export const siteContent = {
   },
 
   footer: {
-    separator: { src: '/brand/footer-star-v2.png', width: 1377, height: 1142 },
+    separator: { src: '/brand/footer-star.png', width: 1377, height: 1142 },
     links: [
       {
         name: 'x',
         href: 'https://x.com/waifu101',
-        image: { src: '/brand/footer-x-v2.png', width: 1306, height: 1204 },
+        image: { src: '/brand/footer-x.png', width: 1306, height: 1204 },
       },
       {
         name: 'linkedin',
         href: 'https://www.linkedin.com/in/sydneyessex/',
-        image: { src: '/brand/footer-linkedin-v2.png', width: 2172, height: 724 },
+        image: { src: '/brand/footer-linkedin.png', width: 2172, height: 724 },
       },
       {
         name: 'github',
         href: 'https://github.com/sessex',
-        image: { src: '/brand/footer-github-v2.png', width: 2084, height: 755 },
+        image: { src: '/brand/footer-github.png', width: 2084, height: 755 },
       },
       {
         name: 'email',
         href: 'mailto:sydneyressex@gmail.com',
-        image: { src: '/brand/footer-email-v2.png', width: 1893, height: 831 },
+        image: { src: '/brand/footer-email.png', width: 1893, height: 831 },
       },
     ],
   },
