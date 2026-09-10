@@ -3,26 +3,24 @@
 :root {
   --background: #ffffff;
   --foreground: #0a0a0a;
-  --page-gutter: clamp(18px, 2.1vw, 32px);
+  --highlight: #ff0ead;
+  --page-gutter: 16px;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-helvetica: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --color-highlight: var(--highlight);
+  --font-sans: var(--font-raveo);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: var(--font-raveo), Arial, sans-serif;
 }
 
-.font-helvetica {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
+::selection { background: var(--highlight); color: var(--foreground); }
 
 @keyframes model-marquee {
   from { transform: translate3d(0, 0, 0); }
@@ -45,10 +43,6 @@ body {
 
   .model-marquee-track {
     animation: model-marquee 32s linear infinite;
-  }
-
-  .model-carousel:hover .model-marquee-track {
-    animation-play-state: paused;
   }
 
   /* Keyboard focus switches to the native, manually scrollable gallery. */

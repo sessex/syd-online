@@ -7,7 +7,7 @@
   width: 100%;
   height: calc(100svh - 2 * var(--page-gutter));
   overflow: hidden;
-  border-radius: 4px;
+  border-radius: 20px;
   background: linear-gradient(#0032ff 0%, #167cff 55%, #76af04 56%, #1d510c 100%);
 }
 
@@ -36,23 +36,73 @@
   bottom: 18px;
   right: 22px;
   z-index: 20;
-  min-height: 36px;
-  padding: 6px 11px;
-  border: 1px solid #fff8;
-  border-radius: 3px;
-  color: white;
-  background: #10295ccc;
-  font-size: 11px;
-  letter-spacing: .025em;
+  display: grid;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  place-items: center;
+  border: 1px solid #ffffffa8;
+  border-radius: 50%;
+  color: #fff;
+  background:
+    linear-gradient(145deg, #ffffff3d 0%, #8bb9ff21 42%, #071b5d61 100%);
+  -webkit-backdrop-filter: blur(14px) saturate(1.35);
+  backdrop-filter: blur(14px) saturate(1.35);
+  box-shadow:
+    inset 0 1px 0 #ffffffb8,
+    inset 0 -1px 0 #80a9ff45,
+    0 5px 16px #071b5d45;
   cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition-property: scale, filter, box-shadow;
+  transition-duration: 140ms;
+  transition-timing-function: cubic-bezier(.2, 0, 0, 1);
 }
-.motionToggle:hover { background: #16294f; }
+.motionToggle::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 8px;
+  width: 22px;
+  height: 10px;
+  border-radius: 50%;
+  background: linear-gradient(110deg, #ffffff9e, #ffffff12);
+  filter: blur(.4px);
+  pointer-events: none;
+}
+.motionToggle:hover {
+  filter: brightness(1.08);
+  box-shadow:
+    inset 0 1px 0 #fff,
+    inset 0 -1px 0 #80a9ff66,
+    0 6px 18px #071b5d59;
+}
+.motionToggle:active {
+  scale: .96;
+  box-shadow:
+    inset 0 1px 0 #ffffffb8,
+    inset 0 -1px 0 #80a9ff45,
+    0 3px 10px #071b5d45;
+}
+.motionToggle[aria-pressed="true"] {
+  background:
+    linear-gradient(145deg, #ffffff42 0%, #c7ffab24 42%, #3b1a7a52 100%);
+}
 .motionToggle:focus-visible { outline: 2px solid white; outline-offset: 3px; }
+.motionIcon { position: absolute; display: grid; width: 22px; height: 22px; place-items: center; }
+.motionIcon svg { display: block; width: 100%; height: 100%; fill: currentColor; }
+.playGlyph { transform: translateX(1px); }
+@media (max-width: 700px) {
+  .hero { border-radius: 34px; }
+}
 @media (max-width: 639px) {
   .hero { --cutout-height: 57svh; }
   .heading { width: 88%; margin-top: 35px; }
   .subtitle { width: 93%; }
   .carousel { padding-bottom: 64px; }
-  .motionToggle { bottom: 15px; right: 15px; min-height: 40px; }
+  .motionToggle { bottom: 17px; right: 17px; }
 }
-@media (prefers-reduced-motion: reduce) { .motionToggle { display: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .motionToggle { display: none; transition: none; }
+}

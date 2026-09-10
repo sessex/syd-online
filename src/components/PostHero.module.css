@@ -1,0 +1,233 @@
+.shell {
+  --ease-settle: cubic-bezier(0.22, 1, 0.36, 1);
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: 64px;
+  color: #121212;
+  font-family: var(--font-raveo), Arial, sans-serif;
+}
+
+.about {
+  display: grid;
+  grid-template-columns: 1.75fr 1fr;
+  gap: 100px;
+  align-items: end;
+  padding-block-start: 90px;
+  margin-block-end: 90px;
+}
+
+.introLead {
+  display: block;
+  max-width: 22ch;
+  font-size: 43px;
+  font-weight: 600;
+  line-height: 1.18;
+  letter-spacing: -1.4px;
+}
+
+.introSupport {
+  display: block;
+  max-width: 48ch;
+  margin-block-start: 25px;
+  font-size: 24px;
+  line-height: 1.45;
+  letter-spacing: -0.45px;
+}
+
+.perspective {
+  font-size: 21px;
+  line-height: 1.45;
+  letter-spacing: -0.3px;
+}
+
+.indexSection {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: 45px;
+  margin-block-start: 58px;
+}
+
+.indexSection:last-child { padding-block-end: 48px; }
+
+.indexTitle {
+  padding-block-start: 20px;
+  font-size: 19px;
+  font-weight: 500;
+  letter-spacing: -0.35px;
+}
+
+.indexList { min-width: 0; padding: 0; margin: 0; list-style: none; }
+.indexRow { margin-inline: -12px; }
+
+.rowButton {
+  display: grid;
+  grid-template-columns: 100px minmax(0, 1fr) 26px;
+  gap: 14px;
+  align-items: center;
+  width: 100%;
+  padding: 17px 12px 20px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.rowButton:focus-visible,
+.visit:focus-visible { outline: 2px solid #bc007c; outline-offset: 5px; }
+
+.rowDate {
+  align-self: start;
+  padding-block-start: 20px;
+  color: #666;
+  font: 12px Arial, sans-serif;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.rowCopy { display: block; min-width: 0; }
+
+.itemName {
+  display: block;
+  font-size: 46px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -1.5px;
+}
+
+.rowBlurb {
+  display: block;
+  margin-block-start: 6px;
+  color: #565656;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: -0.15px;
+}
+
+.disclosureIcon {
+  align-self: center;
+  justify-self: center;
+  font: 26px/1 Arial, sans-serif;
+  transition: transform 280ms var(--ease-settle);
+}
+
+.rowButton[aria-expanded='true'] .disclosureIcon { transform: rotate(45deg); }
+
+.panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition: grid-template-rows 280ms var(--ease-settle), visibility 0s 280ms;
+}
+
+.panel[data-open='true'] {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition: grid-template-rows 320ms var(--ease-settle), visibility 0s;
+}
+
+.panelClip { min-height: 0; overflow: hidden; }
+
+.reveal {
+  max-width: 510px;
+  margin-inline-start: 126px;
+  padding: 0 25px 26px 0;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 160ms ease-out, transform 280ms var(--ease-settle);
+}
+
+.panel[data-open='true'] .reveal {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 240ms ease-out, transform 320ms var(--ease-settle);
+}
+
+.description { font-size: 20px; line-height: 1.5; letter-spacing: -0.2px; }
+.visit, .linkStatus { display: inline-block; margin-block-start: 16px; font-size: 14px; }
+.visit { text-decoration: underline; text-underline-offset: 4px; }
+.linkStatus { color: #6b6b6b; }
+.chromaWord { white-space: nowrap; }
+.chromaLetter { position: relative; display: inline-block; isolation: isolate; }
+
+.chromaLetter::before,
+.chromaLetter::after {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  content: attr(data-letter);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.chromaLetter::before { --split-x: -0.04em; --split-y: 0.012em; color: #f52a9b; }
+.chromaLetter::after { --split-x: 0.04em; --split-y: -0.012em; color: #37b98b; }
+
+@keyframes chroma-wave {
+  0%, 100% { opacity: 0; transform: translate(0, 0); }
+  35% { opacity: 0.85; transform: translate(var(--split-x), var(--split-y)); }
+  65% { opacity: 0.45; transform: translate(var(--split-x), 0); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .rowButton:focus-visible .chromaLetter::before,
+  .rowButton:focus-visible .chromaLetter::after {
+    animation: chroma-wave 380ms ease-in-out var(--letter-delay) both;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .rowButton:hover .chromaLetter::before,
+    .rowButton:hover .chromaLetter::after {
+      animation: chroma-wave 380ms ease-in-out var(--letter-delay) both;
+    }
+  }
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 760px) {
+  .shell { padding-inline: 24px; }
+  .about { grid-template-columns: 1fr; gap: 26px; padding-block-start: 60px; margin-block-end: 60px; }
+  .introLead { font-size: 34px; letter-spacing: -0.9px; }
+  .introSupport { font-size: 21px; letter-spacing: -0.35px; margin-block-start: 20px; }
+  .perspective { font-size: 20px; }
+  .indexSection { grid-template-columns: 1fr; gap: 14px; margin-block-start: 44px; }
+  .indexTitle { font-size: 15px; padding-block-start: 0; }
+  .rowButton { grid-template-columns: minmax(0, 1fr) 22px; gap: 8px 12px; padding: 15px 12px 18px; }
+  .rowDate { grid-column: 1; grid-row: 1; font-size: 11px; padding-block-start: 0; }
+  .rowCopy { grid-column: 1; grid-row: 2; }
+  .itemName { font-size: 30px; letter-spacing: -0.8px; }
+  .rowBlurb { font-size: 15px; line-height: 1.4; }
+  .disclosureIcon { font-size: 23px; grid-column: 2; grid-row: 1 / span 2; }
+  .reveal { margin-inline-start: 12px; padding-inline-end: 15px; }
+  .description { font-size: 18px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel,
+  .panel[data-open='true'],
+  .reveal,
+  .panel[data-open='true'] .reveal,
+  .disclosureIcon { transition: none; }
+}
+
+@media (forced-colors: active) {
+  .chromaLetter::before,
+  .chromaLetter::after { display: none; }
+}
