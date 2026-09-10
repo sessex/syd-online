@@ -81,25 +81,27 @@ export const siteContent = {
   },
 
   footer: {
-    // Single footer strip: "x ★ linkedin ★ github ★ email"
-    // Overlay 4 clickable hit-areas instead of separate images
-    stripImage: '/brand/footer.png',
+    separator: { src: '/brand/footer-star.png', width: 1377, height: 1142 },
     links: [
       {
         name: 'x',
         href: 'https://x.com/waifu101',
+        image: { src: '/brand/footer-x.png', width: 1306, height: 1204 },
       },
       {
         name: 'linkedin',
         href: 'https://www.linkedin.com/in/sydneyessex/',
+        image: { src: '/brand/footer-linkedin.png', width: 2172, height: 724 },
       },
       {
         name: 'github',
         href: 'https://github.com/sessex',
+        image: { src: '/brand/footer-github.png', width: 2084, height: 755 },
       },
       {
         name: 'email',
         href: 'mailto:sydneyressex@gmail.com',
+        image: { src: '/brand/footer-email.png', width: 1893, height: 831 },
       },
     ],
   },
