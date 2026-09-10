@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type * as Three from 'three';
 import { createPixelScene } from './pixel-scene';
 import { fragmentShader, vertexShader } from './shaders';
@@ -13,17 +13,11 @@ type Playback = {
   onScreen: boolean;
 };
 
-export default function PixelBackground({ paused }: { paused: boolean }) {
+export default function PixelBackground() {
   const container = useRef<HTMLDivElement>(null);
-  const playback = useRef<Playback>({ paused, reduced: true, visible: true, onScreen: true });
+  const playback = useRef<Playback>({ paused: false, reduced: true, visible: true, onScreen: true });
   const wake = useRef<() => void>(() => {});
-  const clearPointerResponse = useRef<() => void>(() => {});
-
-  useEffect(() => {
-    playback.current.paused = paused;
-    if (paused) clearPointerResponse.current();
-    wake.current();
-  }, [paused]);
+  const [paused, setPaused] = useState(false);
 
   useEffect(() => {
     const host = container.current;
@@ -64,18 +58,14 @@ export default function PixelBackground({ paused }: { paused: boolean }) {
     let textures: Three.CanvasTexture[] = [];
     let contextLost = false;
     let renderFailed = false;
-    let resumeInitialization: (() => void) | undefined;
-    let handoff: Animation | undefined;
     const pointer = { x: .5, y: .5, hover: 0 };
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const entrance = host.closest<HTMLElement>('[data-entrance]');
-    let introActive = entrance != null && entrance.dataset.entrance !== 'complete';
     playback.current.reduced = motion.matches;
     playback.current.visible = !document.hidden;
 
     const active = () => {
       const p = playback.current;
-      return !disposed && !contextLost && !renderFailed && !introActive && !p.paused && !p.reduced && p.visible && p.onScreen;
+      return !disposed && !contextLost && !renderFailed && !p.paused && !p.reduced && p.visible && p.onScreen;
     };
 
     function restart() {
@@ -83,14 +73,6 @@ export default function PixelBackground({ paused }: { paused: boolean }) {
       lastFrame = 0;
       wake.current();
     }
-    // Render a stable first frame while the entrance changes focus. This avoids
-    // filtering a moving WebGL surface and competing with the aperture's motion.
-    const entranceObserver = new MutationObserver(() => {
-      introActive = entrance != null && entrance.dataset.entrance !== 'complete';
-      if (!introActive) resumeInitialization?.();
-      restart();
-    });
-    if (entrance) entranceObserver.observe(entrance, { attributes: true, attributeFilter: ['data-entrance'] });
     function onMotionChange() {
       playback.current.reduced = motion.matches;
       // Reduced motion is a stable composition, including pointer response.
@@ -107,10 +89,6 @@ export default function PixelBackground({ paused }: { paused: boolean }) {
     }
     function onPointerMove(event: PointerEvent) {
       if (event.pointerType === 'touch' || !active()) return;
-      if (event.target instanceof Element && event.target.closest('[data-hero-interaction="carousel"]')) {
-        pointer.hover = 0;
-        return;
-      }
       const bounds = hero!.getBoundingClientRect();
       pointer.x = (event.clientX - bounds.left) / bounds.width;
       pointer.y = (event.clientY - bounds.top) / bounds.height;
@@ -163,17 +141,9 @@ export default function PixelBackground({ paused }: { paused: boolean }) {
       host!.dataset.motion = 'still';
     }
 
-    clearPointerResponse.current = () => {
-      pointer.hover = 0;
-      if (material) material.uniforms.uHover.value = 0;
-    };
-
     async function initialize() {
       try {
         const THREE = await import('three');
-        // A cold chunk must not compile shaders or replace the artwork mid-reveal.
-        const deferred = entrance?.dataset.entrance === 'running';
-        if (deferred) await new Promise<void>((resolve) => { resumeInitialization = resolve; });
         if (disposed) return;
         renderer = new THREE.WebGLRenderer({ alpha: false, antialias: false, powerPreference: 'low-power' });
         renderer.debug.onShaderError = showFallback;
@@ -206,7 +176,6 @@ export default function PixelBackground({ paused }: { paused: boolean }) {
         geometry = new THREE.PlaneGeometry(2, 2);
         scene.add(new THREE.Mesh(geometry, material));
 
-        let firstDraw = true;
         function draw(now: number) {
           if (disposed || contextLost || renderFailed) return;
           const running = active();
@@ -230,10 +199,7 @@ export default function PixelBackground({ paused }: { paused: boolean }) {
             showFallback();
           }
           if (renderFailed) return;
-          if (firstDraw && deferred && !motion.matches) {
-            handoff = renderer!.domElement.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 350, easing: 'ease-out' });
-          }
-          firstDraw = false;
+          fallback.style.visibility = 'hidden';
           host!.dataset.renderer = 'webgl';
           host!.dataset.motion = running ? 'running' : 'still';
           if (running) frame = requestAnimationFrame(draw);
@@ -257,13 +223,9 @@ export default function PixelBackground({ paused }: { paused: boolean }) {
 
     return () => {
       disposed = true;
-      resumeInitialization?.();
-      handoff?.cancel();
       cancelAnimationFrame(frame);
       wake.current = () => {};
-      clearPointerResponse.current = () => {};
       observer.disconnect();
-      entranceObserver.disconnect();
       resizeObserver.disconnect();
       motion.removeEventListener('change', onMotionChange);
       document.removeEventListener('visibilitychange', onVisibilityChange);
@@ -280,5 +242,18 @@ export default function PixelBackground({ paused }: { paused: boolean }) {
     };
   }, []);
 
-  return <div ref={container} className={styles.background} data-hero-art aria-hidden="true" />;
+  function toggleMotion() {
+    playback.current.paused = !playback.current.paused;
+    setPaused(playback.current.paused);
+    wake.current();
+  }
+
+  return (
+    <>
+      <div ref={container} className={styles.background} aria-hidden="true" />
+      <button type="button" className={styles.motionToggle} aria-pressed={paused} onClick={toggleMotion}>
+        {paused ? 'Play scenery' : 'Pause scenery'}
+      </button>
+    </>
+  );
 }
