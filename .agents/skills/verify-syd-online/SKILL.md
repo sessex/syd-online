@@ -54,7 +54,7 @@ Run one mapped feature with `--feature landing-page`, `--feature smooth-scroll`,
 
 The verifier waits for finite page animations and proves hydration through the carousel's keyboard and blur behavior. It checks wheel easing, cancellation, reduced motion, horizontal carousel scrolling, page content, and link destinations. It aborts one representative external navigation after the browser emits the expected request.
 
-For the editorial rows, also run `scripts/editorial.py` with the same `--url` and a new `--evidence-dir`. It checks the full hit targets, keyboard order, interrupted motion, chroma wave, reduced motion, touch, and six viewport widths. The `prove.sh` helper runs both verifiers.
+For the editorial rows, also run `scripts/editorial.py` with the same `--url` and a new `--evidence-dir`. It checks the full hit targets, keyboard order, interrupted motion, chroma wave, reduced motion, touch, and six viewport widths. Run `scripts/pixel_wishes.py` for the pointer follower, blend layers, motion gates, input transparency, viewport sizing, and idle sleep. The `prove.sh` helper runs all three verifiers.
 
 ## Evidence
 
@@ -67,6 +67,8 @@ Keep proof under `.verification/evidence/<run-id>/`. A successful full run conta
 - `04_carousel_keyboard.png`: the focused carousel after a real `ArrowRight` key press.
 - `05_portfolio_links.png` and `06_contact_links.png`: the two destination groups as rendered.
 - `browser_walkthrough.webm`: the complete browser drive for the selected features.
+- `pixel-wishes/report.json`: the Pixel Wishes motion and boundary checks.
+- `pixel-wishes/pixel_wishes_walkthrough.webm`: the Pixel Wishes browser drive.
 
 Proof is valid only when `report.json` says `passed`, the actions were performed against the launched URL, every requested feature has a passing entry, and the screenshots/video exist. Use real browser input for user actions. The external-scroll regression sets a document scroll position during real wheel motion to check integration with other scroll callers. Do not use React state setters or test-only app hooks. This app has no persistent writes; link side effects are outbound browser handoffs, so the verifier records their destinations and intercepts the representative network handoff at the production boundary instead of depending on third-party uptime. Do not claim an external site itself was verified.
 
@@ -93,7 +95,8 @@ All helpers are executable and live in [`scripts/`](scripts/):
 
 - `server.sh start|doctor|stop <run-id> [port]` owns the production build instance and its scratch state.
 - `verify.py --url <url> --evidence-dir <dir> [--feature <id>]` performs the browser drive and writes durable proof.
-- `prove.sh <run-id> [port] [evidence-dir]` runs launch, doctor, the full browser drive, cleanup, and post-cleanup evidence checks in one command.
+- `pixel_wishes.py --url <url> --evidence-dir <dir>` verifies Pixel Wishes with mouse, press, touch, resize, and motion-preference coverage.
+- `prove.sh <run-id> [port] [evidence-dir]` runs launch, doctor, all browser drives, cleanup, and post-cleanup evidence checks in one command.
 
 For the shortest complete proof:
 

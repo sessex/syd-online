@@ -1,0 +1,23 @@
+.layer {
+  position: fixed;
+  inset: 0;
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+
+.inversion {
+  z-index: 100;
+  mix-blend-mode: difference;
+}
+
+.color {
+  z-index: 101;
+}
+
+@media (prefers-reduced-motion: reduce), (pointer: coarse) {
+  .layer {
+    display: none;
+  }
+}
