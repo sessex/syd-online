@@ -42,3 +42,4 @@ Each feature file describes what the user can do, every visible entry point, the
 - [Photo carousel](./photo-carousel.md) covers keyboard focus and manual horizontal scrolling.
 - [Portfolio links](./portfolio-links.md) covers project and experience destinations plus a representative outbound handoff.
 - [Contact links](./contact-links.md) covers X, LinkedIn, GitHub, and email destinations.
+- [Pixel Wishes cursor](./pixel-wishes-cursor.md) covers pointer motion, pixel rendering, motion gates, input transparency, idle sleep, and viewport sizing.
