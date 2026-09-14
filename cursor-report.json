@@ -1,0 +1,104 @@
+{
+  "app": "Syd Online Pixel Wishes cursor",
+  "url": "http://127.0.0.1:4192",
+  "status": "passed",
+  "checks": {
+    "layers": {
+      "parent": "BODY",
+      "next": "color",
+      "inversionBlend": "difference",
+      "colorBlend": "normal",
+      "pointerEvents": "none",
+      "hidden": true,
+      "focusable": 0
+    },
+    "input_passthrough": {
+      "hit": "Pause scenery",
+      "native_cursor": "pointer"
+    },
+    "motion": {
+      "unpressed": 49,
+      "pressed": 109,
+      "pixels": {
+        "inversion": 3328,
+        "color": 1616
+      }
+    },
+    "resize": {
+      "state": "disabled",
+      "reason": "pointer-leave",
+      "particles": 0,
+      "emitted": 141,
+      "backing": [
+        780,
+        1400
+      ],
+      "css": [
+        390,
+        700
+      ],
+      "overflow": 0
+    },
+    "pointer_leave": {
+      "state": "disabled",
+      "reason": "pointer-leave",
+      "particles": 0,
+      "emitted": 142,
+      "backing": [
+        780,
+        1400
+      ],
+      "css": [
+        390,
+        700
+      ]
+    },
+    "blur": {
+      "state": "disabled",
+      "reason": "blur",
+      "particles": 0,
+      "emitted": 142,
+      "backing": [
+        780,
+        1400
+      ],
+      "css": [
+        390,
+        700
+      ]
+    },
+    "reduced_motion": {
+      "state": "disabled",
+      "reason": "reduced-motion",
+      "particles": 0,
+      "emitted": 0,
+      "backing": [
+        800,
+        600
+      ],
+      "css": [
+        0,
+        0
+      ],
+      "display": "none"
+    },
+    "coarse_pointer": {
+      "state": "disabled",
+      "reason": "coarse-pointer",
+      "particles": 0,
+      "emitted": 0,
+      "backing": [
+        390,
+        700
+      ],
+      "css": [
+        0,
+        0
+      ],
+      "display": "none"
+    }
+  },
+  "page_errors": [],
+  "console_errors": [],
+  "failure": null
+}

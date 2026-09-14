@@ -1,0 +1,218 @@
+{
+  "status": "passed",
+  "url": "http://127.0.0.1:4192",
+  "checks": [
+    {
+      "name": "whole-row targets and disclosure",
+      "item": "trouvaille"
+    },
+    {
+      "name": "whole-row targets and disclosure",
+      "item": "iris"
+    },
+    {
+      "name": "whole-row targets and disclosure",
+      "item": "asimov collective"
+    },
+    {
+      "name": "whole-row targets and disclosure",
+      "item": "goldman sachs"
+    },
+    {
+      "name": "whole-row targets and disclosure",
+      "item": "hypno"
+    },
+    {
+      "name": "whole-row targets and disclosure",
+      "item": "vbn"
+    },
+    {
+      "name": "whole-row targets and disclosure",
+      "item": "artswrk"
+    },
+    {
+      "name": "Enter, Space, and Tab; closing link immediately inert"
+    },
+    {
+      "name": "interrupted transition returns smoothly to closed",
+      "frames": [
+        {
+          "t": 2.5999999523155566,
+          "height": 0
+        },
+        {
+          "t": 10.999999952317012,
+          "height": 0
+        },
+        {
+          "t": 27.599999952315557,
+          "height": 0
+        },
+        {
+          "t": 52.59999995231556,
+          "height": 0
+        },
+        {
+          "t": 60.49999995231701,
+          "height": 16.828125
+        },
+        {
+          "t": 69.39999995231483,
+          "height": 34.640625
+        },
+        {
+          "t": 110.59999995231556,
+          "height": 97.421875
+        },
+        {
+          "t": 151.79999995231628,
+          "height": 129.859375
+        },
+        {
+          "t": 202.59999995231556,
+          "height": 146.375
+        },
+        {
+          "t": 244.29999995231628,
+          "height": 151.453125
+        },
+        {
+          "t": 294.2999999523163,
+          "height": 153.546875
+        },
+        {
+          "t": 335.89999995231483,
+          "height": 153.953125
+        },
+        {
+          "t": 369.09999995231556,
+          "height": 153.984375
+        },
+        {
+          "t": 410.999999952317,
+          "height": 154
+        },
+        {
+          "t": 444.19999995231774,
+          "height": 154
+        },
+        {
+          "t": 477.59999995231556,
+          "height": 154
+        },
+        {
+          "t": 494.19999995231774,
+          "height": 154
+        },
+        {
+          "t": 501.89999995231483,
+          "height": 135.21875
+        },
+        {
+          "t": 510.999999952317,
+          "height": 114.703125
+        },
+        {
+          "t": 552.5999999523156,
+          "height": 47.46875
+        },
+        {
+          "t": 594.2999999523163,
+          "height": 17.296875
+        },
+        {
+          "t": 635.8999999523148,
+          "height": 5.65625
+        },
+        {
+          "t": 677.5999999523156,
+          "height": 1.453125
+        },
+        {
+          "t": 719.1999999523177,
+          "height": 0.203125
+        },
+        {
+          "t": 752.5999999523156,
+          "height": 0
+        },
+        {
+          "t": 785.3999999523148,
+          "height": 0
+        },
+        {
+          "t": 818.7999999523163,
+          "height": 0
+        },
+        {
+          "t": 827.5999999523156,
+          "height": 0
+        },
+        {
+          "t": 835.999999952317,
+          "height": 0
+        },
+        {
+          "t": 844.2999999523163,
+          "height": 0
+        },
+        {
+          "t": 852.5999999523156,
+          "height": 0
+        },
+        {
+          "t": 869.2999999523163,
+          "height": 0
+        },
+        {
+          "t": 885.5999999523156,
+          "height": 0
+        },
+        {
+          "t": 902.5999999523156,
+          "height": 0
+        }
+      ]
+    },
+    {
+      "name": "rapid repeated clicks settle at requested state"
+    },
+    {
+      "name": "native black title remains stable on hover"
+    },
+    {
+      "name": "all rows open without overflow or clipped text",
+      "width": 320
+    },
+    {
+      "name": "all rows open without overflow or clipped text",
+      "width": 390
+    },
+    {
+      "name": "all rows open without overflow or clipped text",
+      "width": 760
+    },
+    {
+      "name": "all rows open without overflow or clipped text",
+      "width": 768
+    },
+    {
+      "name": "all rows open without overflow or clipped text",
+      "width": 1024
+    },
+    {
+      "name": "all rows open without overflow or clipped text",
+      "width": 1440
+    },
+    {
+      "name": "reduced motion instant disclosures and no title trail"
+    },
+    {
+      "name": "forced colors preserves plain readable titles"
+    },
+    {
+      "name": "emulated phone touch opens and closes all seven rows"
+    }
+  ],
+  "page_errors": []
+}

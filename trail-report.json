@@ -1,0 +1,59 @@
+{
+  "status": "passed",
+  "url": "http://127.0.0.1:4192",
+  "checks": [
+    {
+      "name": "date hover cannot stamp a title trail"
+    },
+    {
+      "name": "keyboard disclosure does not invent pointer motion"
+    },
+    {
+      "name": "color persists after exit while black glyph pixels stay fixed",
+      "black_pixels": 1028,
+      "changed_black_pixels": 0,
+      "antialias_edge_deviation": 1,
+      "trail_pixels": 4197
+    },
+    {
+      "name": "flow fades to transparent and animation sleeps"
+    },
+    {
+      "name": "opposite pointer directions produce distinct trails"
+    },
+    {
+      "name": "vertical pointer movement produces trail",
+      "visible_pixels": 2160
+    },
+    {
+      "name": "all seven project and experience titles respond with one canvas"
+    },
+    {
+      "name": "trail realigns after disclosure transitions and scrolling"
+    },
+    {
+      "name": "narrow layout responds without horizontal overflow",
+      "line_count": 2
+    },
+    {
+      "name": "jump between wrapped lines does not stamp false velocity"
+    },
+    {
+      "name": "reduced motion disables the renderer"
+    },
+    {
+      "name": "forced colors retains plain text"
+    },
+    {
+      "name": "motion preference change restores readiness"
+    },
+    {
+      "name": "touch keeps readable titles and working disclosures"
+    },
+    {
+      "name": "unavailable WebGL preserves readable text and disclosure controls"
+    }
+  ],
+  "page_errors": [],
+  "console_errors": []
+}
