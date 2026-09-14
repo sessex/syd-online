@@ -102,36 +102,13 @@ with sync_playwright() as pw:
         settled(panel, False)
         record('rapid repeated clicks settle at requested state')
 
-        # Hover moves only colored copies. Native animations are sampled while playing.
         page.mouse.move(0, 0)
-        first.focus()
-        first.press("Tab")
-        page.wait_for_timeout(100)
-        letter = first.locator('[data-letter]').first
-        before = letter.bounding_box()
+        ink = first.locator('[data-chromatic-ink]')
+        before = ink.bounding_box()
         first.hover()
-        page.wait_for_timeout(90)
-        chroma = first.evaluate('''el => ({
-          background: getComputedStyle(el).backgroundColor,
-          color: getComputedStyle(el.querySelector('[data-letter]')).color,
-          layers: [...el.querySelectorAll('[data-letter]')].map(letter => ({
-            pink: getComputedStyle(letter, '::before').color,
-            green: getComputedStyle(letter, '::after').color,
-            opacity: getComputedStyle(letter, '::before').opacity,
-            transform: getComputedStyle(letter, '::before').transform,
-            delay: getComputedStyle(letter, '::before').animationDelay
-          }))
-        })''')
-        assert chroma['background'] == 'rgba(0, 0, 0, 0)'
-        assert chroma['color'] == 'rgb(18, 18, 18)'
-        assert all(layer['pink'] == 'rgb(245, 42, 155)' and layer['green'] == 'rgb(55, 185, 139)' for layer in chroma['layers'])
-        assert any(float(layer['opacity']) > 0 for layer in chroma['layers'])
-        assert len({layer['delay'] for layer in chroma['layers']}) > 1
-        assert letter.bounding_box() == before
-        first.screenshot(path=args.evidence_dir / 'hover-wave.png', animations='allow')
-        page.wait_for_timeout(850)
-        assert letter.evaluate('el => getComputedStyle(el, "::before").opacity') == '0'
-        record('pink-green stagger; stable dark title; one-shot wave', observed=chroma)
+        assert ink.bounding_box() == before
+        assert ink.evaluate('el => getComputedStyle(el).color') == 'rgb(18, 18, 18)'
+        record('native black title remains stable on hover')
         page.mouse.move(0, 0)
 
         page.get_by_role('region', name='About Sydney Essex').scroll_into_view_if_needed()
@@ -160,13 +137,13 @@ with sync_playwright() as pw:
         first.click()
         assert panel.bounding_box()['height'] == 0
         first.hover()
-        assert letter.evaluate('el => getComputedStyle(el, "::before").animationName') == 'none'
+        expect(page.locator('[data-chromatic-trail]')).to_have_attribute('data-state', 'disabled')
         first.click()
         assert panel.bounding_box()['height'] > 20
         assert panel.evaluate('el => el.getAnimations({subtree:true}).length') == 0
-        record('reduced motion instant disclosures and no chroma wave')
+        record('reduced motion instant disclosures and no title trail')
         page.emulate_media(reduced_motion='no-preference', forced_colors='active')
-        assert letter.evaluate('el => getComputedStyle(el, "::before").display') == 'none'
+        expect(page.locator('[data-chromatic-trail]')).to_have_attribute('data-state', 'disabled')
         record('forced colors preserves plain readable titles')
 
         touch = browser.new_context(viewport={'width': 390, 'height': 844}, is_mobile=True, has_touch=True)

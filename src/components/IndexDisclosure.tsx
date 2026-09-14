@@ -1,6 +1,6 @@
 'use client';
 
-import { type CSSProperties, useId, useState } from 'react';
+import { useId, useState } from 'react';
 import styles from './PostHero.module.css';
 
 export type IndexItem = {
@@ -12,32 +12,6 @@ export type IndexItem = {
   readonly dateDescription: string;
   readonly linkStatus?: string;
 };
-
-function ChromaTitle({ name }: { name: string }) {
-  let letterIndex = 0;
-
-  return (
-    <span aria-hidden="true">
-      {name.split(' ').map((word, wordIndex) => (
-        <span key={wordIndex}>
-          {wordIndex > 0 && ' '}
-          <span className={styles.chromaWord}>
-            {Array.from(word).map((letter, index) => (
-              <span
-                key={index}
-                className={styles.chromaLetter}
-                data-letter={letter}
-                style={{ '--letter-delay': `${letterIndex++ * 20}ms` } as CSSProperties}
-              >
-                {letter}
-              </span>
-            ))}
-          </span>
-        </span>
-      ))}
-    </span>
-  );
-}
 
 export default function IndexDisclosure({ item }: { item: IndexItem }) {
   const [open, setOpen] = useState(false);
@@ -59,9 +33,8 @@ export default function IndexDisclosure({ item }: { item: IndexItem }) {
             {item.dateLabel}
           </span>
           <span className={styles.rowCopy}>
-            <span id={`${id}-name`} className={styles.itemName}>
-              <span className={styles.srOnly}>{item.name}</span>
-              <ChromaTitle name={item.name} />
+            <span id={`${id}-name`} className={styles.itemName} data-chromatic-ink>
+              {item.name}
             </span>
             <span id={`${id}-blurb`} className={styles.rowBlurb}>{item.blurb}</span>
           </span>

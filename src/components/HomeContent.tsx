@@ -4,6 +4,7 @@ import Projects from './Projects';
 import Experience from './Experience';
 import Footer from './Footer';
 import SmoothScroll from './SmoothScroll';
+import TitleTrails from './title-trails/TitleTrails';
 
 export default function HomeContent() {
   return (
@@ -12,8 +13,10 @@ export default function HomeContent() {
       <main>
         <Hero />
         <About />
-        <Projects />
-        <Experience />
+        <TitleTrails>
+          <Projects />
+          <Experience />
+        </TitleTrails>
       </main>
       <Footer />
     </div>
