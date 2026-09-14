@@ -11,5 +11,7 @@ also observes Trouvaille's outbound request from its visit link. The external re
 intentionally not verified.
 
 Run scripts/editorial.py for click targets, keyboard navigation, transition interruption,
-chroma animation, reduced motion, emulated touch, responsive widths, and screenshots.
+stable title text, reduced motion, emulated touch, responsive widths, and screenshots.
 Pass --url and --evidence-dir as with verify.py. Retain its report and recording.
+
+Run scripts/chromatic_trails.py for the title hover effect. See chromatic-trails.md.

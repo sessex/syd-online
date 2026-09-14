@@ -43,3 +43,5 @@ Each feature file describes what the user can do, every visible entry point, the
 - [Portfolio links](./portfolio-links.md) covers project and experience destinations plus a representative outbound handoff.
 - [Contact links](./contact-links.md) covers X, LinkedIn, GitHub, and email destinations.
 - [Pixel Wishes cursor](./pixel-wishes-cursor.md) covers pointer motion, pixel rendering, motion gates, input transparency, idle sleep, and viewport sizing.
+
+- [Chromatic title trails](./chromatic-trails.md) covers directional pointer motion behind fixed text, persistent decay, idle sleep, layout changes, and graphics or motion fallbacks.

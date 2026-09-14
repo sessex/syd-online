@@ -54,7 +54,7 @@ Run one mapped feature with `--feature landing-page`, `--feature smooth-scroll`,
 
 The verifier waits for finite page animations and proves hydration through the carousel's keyboard and blur behavior. It checks wheel easing, cancellation, reduced motion, horizontal carousel scrolling, page content, and link destinations. It aborts one representative external navigation after the browser emits the expected request.
 
-For the editorial rows, also run `scripts/editorial.py` with the same `--url` and a new `--evidence-dir`. It checks the full hit targets, keyboard order, interrupted motion, chroma wave, reduced motion, touch, and six viewport widths. Run `scripts/pixel_wishes.py` for the pointer follower, blend layers, motion gates, input transparency, viewport sizing, and idle sleep. The `prove.sh` helper runs all three verifiers.
+For the editorial rows, also run `scripts/editorial.py` with the same `--url` and a new `--evidence-dir`. It checks the full hit targets, keyboard order, interrupted motion, stable black titles, reduced motion, touch, and six viewport widths. Run `scripts/pixel_wishes.py` for the pointer follower, blend layers, motion gates, input transparency, viewport sizing, and idle sleep. Run `scripts/chromatic_trails.py` for directional color trails, persistent decay, fixed black glyphs, idle sleep, layout changes, and motion or graphics fallbacks. It requires Pillow in addition to Playwright. The `prove.sh` helper runs all four verifiers.
 
 ## Evidence
 
