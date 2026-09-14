@@ -14,8 +14,8 @@ export default function HomeContent() {
         <Hero />
         <About />
         <TitleTrails>
-          <Projects />
           <Experience />
+          <Projects />
         </TitleTrails>
       </main>
       <Footer />

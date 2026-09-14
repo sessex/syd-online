@@ -29,7 +29,7 @@ export const siteContent = {
   about: {
     paragraphs: [
       'sydney essex is a product engineer in nyc with 6 years of experience across creative startups and enterprise. her work has spanned browser video, generative image pipelines, and now agentic tools for designers.',
-      'she cares about interfaces that feel good to use and about building the ai creative tools she\'d want as an instagram-obsessed content creator. currently curious about how technology can connect us back to the physical world in front of us.',
+      'she cares about interfaces that feel good to use and about building the ai creative tools she\'d want as an instagram-obsessed content creator. currently curious about how technology can connect us back to the physical world in front of us. forever enthusiast of dance, halloween, and sandwiches.',
     ],
   },
 
@@ -63,7 +63,7 @@ export const siteContent = {
         name: 'asimov collective',
         description: 'building multi-tenant AI platform that learns client\'s brand and generates on-brand assets for in-house design work',
         href: 'https://www.asimovcollective.com/',
-        blurb: 'brand-aware image tools',
+        blurb: 'brand-aware design tools',
         dateLabel: '2026–present',
         dateDescription: 'March 2026 to present',
       },
@@ -87,13 +87,13 @@ export const siteContent = {
         name: 'vbn',
         description: 'browser-based video conferencing and event streaming platform',
         href: 'https://www.linkedin.com/company/vbnxyz/',
-        blurb: 'video calls & live streaming',
+        blurb: 'video conferencing & live streaming',
         dateLabel: '2021–23',
         dateDescription: 'September 2021 to February 2023',
       },
       {
         name: 'artswrk',
-        description: 'launched an arts and entertainment professional network end-to-end',
+        description: 'launched an arts and entertainment professional network as founding engineer',
         href: 'https://artswrk.com/',
         blurb: 'a network for arts professionals',
         dateLabel: '2020–21',
@@ -103,27 +103,27 @@ export const siteContent = {
   },
 
   footer: {
-    separator: { src: '/brand/footer-star.png', width: 1377, height: 1142 },
+    separator: { src: '/brand/footer-star.png', width: 122, height: 116 },
     links: [
       {
         name: 'x',
         href: 'https://x.com/waifu101',
-        image: { src: '/brand/footer-x.png', width: 1306, height: 1204 },
+        image: { src: '/brand/footer-x.png', width: 131, height: 147 },
       },
       {
         name: 'linkedin',
         href: 'https://www.linkedin.com/in/sydneyessex/',
-        image: { src: '/brand/footer-linkedin.png', width: 2172, height: 724 },
+        image: { src: '/brand/footer-linkedin.png', width: 629, height: 212 },
       },
       {
         name: 'github',
         href: 'https://github.com/sessex',
-        image: { src: '/brand/footer-github.png', width: 2084, height: 755 },
+        image: { src: '/brand/footer-github.png', width: 520, height: 244 },
       },
       {
         name: 'email',
         href: 'mailto:sydneyressex@gmail.com',
-        image: { src: '/brand/footer-email.png', width: 1893, height: 831 },
+        image: { src: '/brand/footer-email.png', width: 401, height: 232 },
       },
     ],
   },

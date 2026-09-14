@@ -22,7 +22,7 @@ export default function Footer() {
             )}
             <Link
               href={link.href}
-              className="flex min-h-11 min-w-11 basis-0 items-center justify-center transition-opacity hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black"
+              className="flex min-h-11 min-w-11 basis-0 items-center justify-center focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black"
               style={link.name === 'x'
                 ? { flex: '0 0 clamp(44px, 6vw, 64px)' }
                 : { flexGrow: link.image.width / link.image.height }}
