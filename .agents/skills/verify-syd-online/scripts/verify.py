@@ -237,6 +237,26 @@ def main() -> int:
         if "photo-carousel" in selected:
             page.evaluate("window.scrollTo(0, 0)")
             carousel = page.get_by_role("region", name="Sydney’s photo carousel. Scroll to explore.")
+            if carousel.evaluate("element => element === document.activeElement"):
+                page.keyboard.press("Tab")
+                expect(carousel).not_to_be_focused()
+            track = carousel.locator(".model-marquee-track")
+            carousel.hover()
+            autoplay_before = track.evaluate("element => element.getBoundingClientRect().x")
+            page.wait_for_timeout(400)
+            autoplay_after = track.evaluate("element => element.getBoundingClientRect().x")
+            animation_state = track.evaluate("element => getComputedStyle(element).animationPlayState")
+            if animation_state != "running" or autoplay_after >= autoplay_before - 2:
+                raise AssertionError(
+                    "carousel did not keep moving while hovered: "
+                    f"before={autoplay_before}, after={autoplay_after}, state={animation_state}"
+                )
+            action(
+                "hover carousel while autoplay continues",
+                before=autoplay_before,
+                after=autoplay_after,
+                animation_state=animation_state,
+            )
             carousel.focus()
             before = carousel.evaluate("element => element.scrollLeft")
             carousel.press("ArrowRight")
@@ -248,6 +268,11 @@ def main() -> int:
             distance = round(after - before, 2)
             report["features"]["photo-carousel"] = {
                 "status": "passed",
+                "hover_autoplay": {
+                    "position_before": autoplay_before,
+                    "position_after": autoplay_after,
+                    "animation_state": animation_state,
+                },
                 "scroll_left_before": before,
                 "scroll_left_after": after,
                 "distance": distance,

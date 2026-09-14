@@ -131,18 +131,27 @@ def main() -> int:
             raise AssertionError(f"unexpected cursor layers: {layers}")
         checks["layers"] = layers
 
-        button = page.get_by_role("button", name="Pause scenery")
+        button = page.get_by_role("button", name="trouvaille", exact=True)
+        button.scroll_into_view_if_needed()
         box = button.bounding_box()
         if box is None:
-            raise AssertionError("scenery button has no bounding box")
+            raise AssertionError("project disclosure has no bounding box")
         point = {"x": box["x"] + box["width"] / 2, "y": box["y"] + box["height"] / 2}
-        hit = page.evaluate("p => document.elementFromPoint(p.x, p.y)?.closest('button')?.textContent", point)
+        hit = button.evaluate(
+            "(element, point) => document.elementFromPoint(point.x, point.y)?.closest('button') === element",
+            point,
+        )
         native_cursor = button.evaluate("element => getComputedStyle(element).cursor")
-        if hit != "Pause scenery" or native_cursor == "none":
+        if not hit or native_cursor == "none":
             raise AssertionError(f"input passthrough failed: {hit}, {native_cursor}")
         page.mouse.click(point["x"], point["y"])
-        expect(page.get_by_role("button", name="Play scenery")).to_have_attribute("aria-pressed", "true")
-        checks["input_passthrough"] = {"hit": hit, "native_cursor": native_cursor}
+        expect(button).to_have_attribute("aria-expanded", "true")
+        checks["input_passthrough"] = {
+            "control": "trouvaille project disclosure",
+            "hit": hit,
+            "native_cursor": native_cursor,
+            "expanded": button.get_attribute("aria-expanded"),
+        }
 
         unpressed = sweep(page, False)
         pressed = sweep(page, True)

@@ -13,13 +13,13 @@ The Pixel Wishes cursor adds a pixel butterfly follower and falling heart trail 
 
 Run `python3 .agents/skills/verify-syd-online/scripts/pixel_wishes.py --url "$URL" --evidence-dir "$EVIDENCE"` against the production server reported by `server.sh doctor`.
 
-The verifier uses real Playwright mouse, press, click, resize, and touch input. It checks both canvases for painted pixels, compares unpressed and pressed emission, waits for the runtime to settle with no particles, verifies click-through to the scenery control, and checks backing dimensions at a device scale above the production cap. Separate reduced-motion and mobile touch contexts prove suppression.
+The verifier uses real Playwright mouse, press, click, resize, and touch input. It checks both canvases for painted pixels, compares unpressed and pressed emission, waits for the runtime to settle with no particles, verifies click-through to the trouvaille project disclosure, and checks backing dimensions at a device scale above the production cap. Separate reduced-motion and mobile touch contexts prove suppression.
 
 ## Proof
 
 Require `report.json` with `status` set to `passed`, `01_pixel_wishes_hero.png`, `02_pixel_wishes_editorial.png`, and `pixel_wishes_walkthrough.webm`.
 
-The report must show two direct canvas siblings, difference blending only on the inversion layer, nonzero pixels on both layers, materially higher pressed emission, zero particles after settlement, no horizontal overflow, cleared canvases after leave and blur, and no page or console errors.
+The report must show two direct canvas siblings, difference blending only on the inversion layer, nonzero pixels on both layers, successful disclosure input through the canvases, materially higher pressed emission, zero particles after settlement, no horizontal overflow, cleared canvases after leave and blur, and no page or console errors.
 
 ## Gotchas
 

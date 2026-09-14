@@ -1,13 +1,12 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import type * as Three from 'three';
 import { createPixelScene } from './pixel-scene';
 import { fragmentShader, vertexShader } from './shaders';
 import styles from './hero.module.css';
 
 type Playback = {
-  paused: boolean;
   reduced: boolean;
   visible: boolean;
   onScreen: boolean;
@@ -15,9 +14,8 @@ type Playback = {
 
 export default function PixelBackground() {
   const container = useRef<HTMLDivElement>(null);
-  const playback = useRef<Playback>({ paused: false, reduced: true, visible: true, onScreen: true });
+  const playback = useRef<Playback>({ reduced: true, visible: true, onScreen: true });
   const wake = useRef<() => void>(() => {});
-  const [paused, setPaused] = useState(false);
 
   useEffect(() => {
     const host = container.current;
@@ -65,7 +63,7 @@ export default function PixelBackground() {
 
     const active = () => {
       const p = playback.current;
-      return !disposed && !contextLost && !renderFailed && !p.paused && !p.reduced && p.visible && p.onScreen;
+      return !disposed && !contextLost && !renderFailed && !p.reduced && p.visible && p.onScreen;
     };
 
     function restart() {
@@ -179,7 +177,6 @@ export default function PixelBackground() {
         function draw(now: number) {
           if (disposed || contextLost || renderFailed) return;
           const running = active();
-          // Cap animation at 24fps. Time stops while paused/hidden/offscreen.
           if (running && lastFrame && now - lastFrame < 1000 / 24) {
             frame = requestAnimationFrame(draw);
             return;
@@ -242,18 +239,5 @@ export default function PixelBackground() {
     };
   }, []);
 
-  function toggleMotion() {
-    playback.current.paused = !playback.current.paused;
-    setPaused(playback.current.paused);
-    wake.current();
-  }
-
-  return (
-    <>
-      <div ref={container} className={styles.background} aria-hidden="true" />
-      <button type="button" className={styles.motionToggle} aria-pressed={paused} onClick={toggleMotion}>
-        {paused ? 'Play scenery' : 'Pause scenery'}
-      </button>
-    </>
-  );
+  return <div ref={container} className={styles.background} aria-hidden="true" />;
 }
